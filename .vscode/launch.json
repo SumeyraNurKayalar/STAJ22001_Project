@@ -1,0 +1,34 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "WarehouseGUI",
+            "request": "launch",
+            "mainClass": "com.depo.gui.WarehouseGUI",
+            "projectName": "depo-yonetim-sistemi"
+        },
+        {
+            "type": "java",
+            "name": "App",
+            "request": "launch",
+            "mainClass": "com.depo.App",
+            "projectName": "DepoYonetimSistemi_efa0cace"
+        },
+        {
+            "type": "java",
+            "name": "MainLauncher",
+            "request": "launch",
+            "mainClass": "com.depo.MainLauncher",
+            "projectName": "DepoYonetimSistemi_efa0cace"
+        },
+        {
+            "type": "java",
+            "name": "MainLauncher",
+            "request": "launch",
+            "mainClass": "com.depo.MainLauncher",
+            "projectName": "depo-yonetim-sistemi",
+            "vmArgs": ""
+        }
+    ]
+}

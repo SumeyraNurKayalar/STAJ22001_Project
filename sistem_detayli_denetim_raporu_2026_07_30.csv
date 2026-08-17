@@ -1,0 +1,78 @@
+Log ID;Ürün ID;Ýþlem Tipi;Miktar;Açýklama;Ýþlemi Yapan;Kullanýcý Rolü;Deðiþim Detaylarý;Tarih/Saat
+84;6;STOK_ÇIKIÞ;-20;Stok Hareketi;Nur;ADMIN;Mevcut Stok Deðiþimi;2026-07-29 14:21:59.477
+83;6;GÜNCELLEME;-20;Ürün bilgileri güncellendi: Þeker;Nur;ADMIN;Ýsim: [Þeker -> Þeker] | Miktar: [570 -> 550] | Fiyat: [55,50 -> 55,50] | Konum: [Raf-S3 -> Raf-S3];2026-07-29 14:21:59.447
+82;3;STOK_GÝRÝÞ;3;Stok Hareketi;Nur;ADMIN;Mevcut Stok Deðiþimi;2026-07-29 14:21:35.687
+81;3;GÜNCELLEME;3;Ürün bilgileri güncellendi: Deneme ürünü;Nur;ADMIN;Ýsim: [Deneme ürünü -> Deneme ürünü] | Miktar: [7 -> 10] | Fiyat: [20,00 -> 20,00] | Konum: [Raf-A1 -> Raf-A1];2026-07-29 14:21:35.66
+80;3;STOK_ÇIKIÞ;-65;Stok Hareketi;Nur;ADMIN;Mevcut Stok Deðiþimi;2026-07-29 14:20:04.597
+79;3;GÜNCELLEME;-65;Ürün bilgileri güncellendi: Deneme ürünü;Nur;ADMIN;Ýsim: [Deneme ürünü -> Deneme ürünü] | Miktar: [72 -> 7] | Fiyat: [20,00 -> 20,00] | Konum: [Raf-A1 -> Raf-A1];2026-07-29 14:20:04.56
+78;0;FÝRMA GÜNCELLEME;0;Firma ID: 8 | Eski Adý: 'Cool Aksesuar Lojistik' -> Yeni Adý: 'Cool Aksesuar Lojistik';Nur;ADMIN;null;2026-07-25 18:10:36.887
+77;0;FÝRMA GÜNCELLEME;0;Ýþlemi Yapan: Nur (ADMIN) | Firma ID: 9 | Eski Adý: 'Gofirik Fýstýk Lojistik' -> Yeni Adý: 'Gofirikli Fýstýk Lojistik';null;null;null;2026-07-25 17:59:22.1
+73;0;FÝRMA GÜNCELLEME;0;Ýþlemi Yapan: [Nur] | Firma ID: 10 | Eski Adý: 'LEGO A.Þ.' -> Yeni Adý: 'LEGO A.Þ.';null;null;null;2026-07-25 17:40:31.583
+72;0;FÝRMA GÜNCELLEME;0;Firma ID: 8 | Eski Adý: 'Cool Aksesuar Lojistik' -> Yeni Adý: 'Cool Aksesuar Lojistik';null;null;null;2026-07-25 17:33:58.833
+71;0;FÝRMA GÜNCELLEME;0;Firma ID: 10 | Eski Adý: 'LEGO A.Þ.' -> Yeni Adý: 'LEGO A.Þ.';null;null;null;2026-07-25 17:19:43.437
+69;5;STOCK OUT;-6;Stok Hareketi;Nur;ADMIN;Mevcut Stok Deðiþimi;2026-07-25 17:14:54.06
+68;5;GÜNCELLEME;-6;Ürün bilgileri güncellendi: Yeþil Gözlük;Nur;ADMIN;Ýsim: [Yeþil Gözlük -> Yeþil Gözlük] | Miktar: [166 -> 160] | Fiyat: [850,00 -> 850,00] | Konum: [Raf-G6 -> Raf-G6];2026-07-25 17:14:54.003
+67;9;STOCK OUT;-63;Stok Hareketi;Nur;ADMIN;Mevcut Stok Deðiþimi;2026-07-25 16:57:21.59
+66;9;GÜNCELLEME;-63;Ürün bilgileri güncellendi: Lego - 1;Nur;ADMIN;Ýsim: [Lego - 1 -> Lego - 1] | Miktar: [372 -> 309] | Fiyat: [1230,50 -> 1230,50] | Konum: [Raf-K9 -> Raf-K9];2026-07-25 16:57:21.543
+65;3;GÜNCELLEME;0;Ürün bilgileri güncellendi: Deneme ürünü;Nur;ADMIN;Ýsim: [Deneme1 -> Deneme ürünü] | Miktar: [72 -> 72] | Fiyat: [20,00 -> 20,00] | Konum: [Raf-A1 -> Raf-A1];2026-07-24 14:11:29.103
+64;3;STOCK IN;22;Stok Hareketi;Zeynep;SUPPLIER;Mevcut Stok Deðiþimi;2026-07-21 17:54:39.49
+63;3;GÜNCELLEME;22;Ürün bilgileri güncellendi: Deneme1;Zeynep;SUPPLIER;Ýsim: [Deneme1 -> Deneme1] | Miktar: [50 -> 72] | Fiyat: [20,00 -> 20,00] | Konum: [Raf-A1 -> Raf-A1];2026-07-21 17:54:39.417
+62;7;STOCK IN;25;Stok Hareketi;Zeynep;SUPPLIER;Mevcut Stok Deðiþimi;2026-07-21 15:56:38.653
+61;7;GÜNCELLEME;25;Ürün bilgileri güncellendi: Tuz;Zeynep;SUPPLIER;Ýsim: [Tuz -> Tuz] | Miktar: [232 -> 257] | Fiyat: [32,50 -> 32,50] | Konum: [Raf-C37 -> Raf-C37];2026-07-21 15:56:38.607
+60;9;GÜNCELLEME;22;Ürün bilgileri güncellendi: Lego - 1;Zeynep;SUPPLIER;Ýsim: [Lego - 1 -> Lego - 1] | Miktar: [350 -> 372] | Fiyat: [1230,50 -> 1230,50] | Konum: [Raf-K9 -> Raf-K9];2026-07-21 15:34:07.207
+59;5;GÜNCELLEME;66;Ürün bilgileri güncellendi: Yeþil Gözlük;Zeynep;SUPPLIER;Ýsim: [Yeþil Gözlük -> Yeþil Gözlük] | Miktar: [100 -> 166] | Fiyat: [850,00 -> 850,00] | Konum: [Raf-G6 -> Raf-G6];2026-07-21 15:18:41.12
+58;4;GÜNCELLEME;32;Ürün bilgileri güncellendi: Ram;Zeynep;SUPPLIER;Ýsim: [Ram -> Ram] | Miktar: [270 -> 302] | Fiyat: [12500,00 -> 12500,00] | Konum: [Raf-G9 -> Raf-G9];2026-07-21 15:18:16.893
+57;7;GÜNCELLEME;32;Ürün bilgileri güncellendi: Tuz;Zeynep;SUPPLIER;Ýsim: [Tuz -> Tuz] | Miktar: [200 -> 232] | Fiyat: [32,50 -> 32,50] | Konum: [Raf-C37 -> Raf-C37];2026-07-21 14:58:42.69
+56;8;GÜNCELLEME;-100;Ürün bilgileri güncellendi: Gofret;Ayþe;STAFF;Ýsim: [Gofret -> Gofret] | Miktar: [700 -> 600] | Fiyat: [92,50 -> 92,50] | Konum: [Raf-B3 -> Raf-B3];2026-07-21 13:09:04.887
+55;8;GÜNCELLEME;-30;Ürün bilgileri güncellendi: Gofret;Nur;ADMIN;Ýsim: [Gofret -> Gofret] | Miktar: [730 -> 700] | Fiyat: [92,50 -> 92,50] | Konum: [Raf-B3 -> Raf-B3];2026-07-18 21:52:31.183
+54;4;GÜNCELLEME;-9;Ürün bilgileri güncellendi: Ram;Nur;ADMIN;Ýsim: [Ram -> Ram] | Miktar: [279 -> 270] | Fiyat: [12500,00 -> 12500,00] | Konum: [Raf-G9 -> Raf-G9];2026-07-18 15:08:55.677
+53;9;GÜNCELLEME;75;Ürün bilgileri güncellendi: Lego - 1;Nur;ADMIN;Ýsim: [Lego - 1 -> Lego - 1] | Miktar: [275 -> 350] | Fiyat: [1230,50 -> 1230,50] | Konum: [Raf-K9 -> Raf-K9];2026-07-17 20:06:07.967
+52;9;GÜNCELLEME;0;Ürün bilgileri güncellendi: Lego - 1;Nur;ADMIN;Ýsim: [Lego -> Lego - 1] | Miktar: [275 -> 275] | Fiyat: [1230,50 -> 1230,50] | Konum: [Raf-K9 -> Raf-K9];2026-07-17 20:05:20.837
+51;9;GÜNCELLEME;25;Ürün bilgileri güncellendi: Lego;Nur;ADMIN;Ýsim: [Lego -> Lego] | Miktar: [250 -> 275] | Fiyat: [1230,50 -> 1230,50] | Konum: [Raf-K9 -> Raf-K9];2026-07-17 16:32:18.7
+50;5;GÜNCELLEME;0;Ürün bilgileri güncellendi: Yeþil Gözlük;Nur;ADMIN;Ýsim: [Pembe Gözlük -> Yeþil Gözlük] | Miktar: [100 -> 100] | Fiyat: [850,00 -> 850,00] | Konum: [Raf-G6 -> Raf-G6];2026-07-17 15:25:45.153
+49;6;GÜNCELLEME;-48;Ürün bilgileri güncellendi: Þeker;Nur;ADMIN;Ýsim: [Þeker -> Þeker] | Miktar: [618 -> 570] | Fiyat: [55,50 -> 55,50] | Konum: [Raf-S3 -> Raf-S3];2026-07-17 13:34:53.073
+48;9;STOCK IN;250;Sisteme yeni ürün eklendi: Lego;Nur;ADMIN;Ýlk Stok Giriþi | Miktar: 250;2026-07-17 13:32:39.437
+47;8;GÜNCELLEME;-55;Ürün bilgileri güncellendi: Gofret;Nur;ADMIN;Ýsim: [Gofret -> Gofret] | Miktar: [785 -> 730] | Fiyat: [92,50 -> 92,50] | Konum: [Raf-B3 -> Raf-B3];2026-07-17 11:37:38.477
+46;8;STOCK IN;785;Sisteme yeni ürün eklendi: Gofret;Nur;ADMIN;Ýlk Stok Giriþi | Miktar: 785;2026-07-16 00:35:21.657
+45;3;GÜNCELLEME;0;Ürün bilgileri güncellendi: Deneme1;Nur;ADMIN;Ýsim: [Deneme -> Deneme1] | Miktar: [50 -> 50] | Fiyat: [20,00 -> 20,00] | Konum: [Raf-A1 -> Raf-A1];2026-07-16 00:34:22.567
+44;5;GÜNCELLEME;5;Ürün bilgileri güncellendi: Pembe Gözlük;Nur;ADMIN;Ýsim: [Pembe Gözlük -> Pembe Gözlük] | Miktar: [95 -> 100] | Fiyat: [850,00 -> 850,00] | Konum: [Raf-G6 -> Raf-G6];2026-07-16 00:33:58.813
+42;7;GÜNCELLEME;-6;Ürün bilgileri güncellendi: Tuz;Nur;ADMIN;Ýsim: [Tuz -> Tuz] | Miktar: [206 -> 200] | Fiyat: [32,50 -> 32,50] | Konum: [Raf-C37 -> Raf-C37];2026-07-15 23:48:25.747
+40;3;GÜNCELLEME;28;Ürün bilgileri güncellendi: Deneme;Nur;ADMIN;Ýsim: [Deneme -> Deneme] | Miktar: [22 -> 50] | Fiyat: [20,00 -> 20,00] | Konum: [Raf-A1 -> Raf-A1];2026-07-15 23:25:40.737
+39;3;GÜNCELLEME;-8;Ürün bilgileri güncellendi: Deneme;Nur;ADMIN;Ýsim: [Deneme -> Deneme] | Miktar: [30 -> 22] | Fiyat: [20,00 -> 20,00] | Konum: [Raf-A1 -> Raf-A1];2026-07-15 23:11:33.67
+38;3;GÜNCELLEME;-8;Ürün bilgileri güncellendi: Deneme;Nur;ADMIN;Ýsim: [Deneme -> Deneme] | Miktar: [38 -> 30] | Fiyat: [20,00 -> 20,00] | Konum: [Raf-A1 -> Raf-A1];2026-07-15 23:11:29.067
+37;3;GÜNCELLEME;-6;Ürün bilgileri güncellendi: Deneme;Nur;ADMIN;Ýsim: [Deneme -> Deneme] | Miktar: [44 -> 38] | Fiyat: [20,00 -> 20,00] | Konum: [Raf-A1 -> Raf-A1];2026-07-15 22:42:07.333
+36;3;GÜNCELLEME;2;Ürün bilgileri güncellendi: Deneme;Nur;ADMIN;Ýsim: [Deneme -> Deneme] | Miktar: [42 -> 44] | Fiyat: [20,00 -> 20,00] | Konum: [Raf-A1 -> Raf-A1];2026-07-15 22:41:52.91
+35;3;GÜNCELLEME;6;Ürün bilgileri güncellendi: Deneme;Nur;ADMIN;Ýsim: [Deneme -> Deneme] | Miktar: [36 -> 42] | Fiyat: [20,00 -> 20,00] | Konum: [Raf-A1 -> Raf-A1];2026-07-15 22:41:35.037
+34;3;GÜNCELLEME;8;Ürün bilgileri güncellendi: Deneme;Nur;ADMIN;Ýsim: [Deneme -> Deneme] | Miktar: [28 -> 36] | Fiyat: [20,00 -> 20,00] | Konum: [Raf-A1 -> Raf-A1];2026-07-15 21:55:17.987
+33;3;GÜNCELLEME;-6;Ürün bilgileri güncellendi: Deneme;Nur;ADMIN;Ýsim: [Deneme -> Deneme] | Miktar: [34 -> 28] | Fiyat: [20,00 -> 20,00] | Konum: [Raf-A1 -> Raf-A1];2026-07-15 21:54:29.123
+32;3;GÜNCELLEME;-3;Ürün bilgileri güncellendi: Deneme;Nur;ADMIN;Ýsim: [Deneme -> Deneme] | Miktar: [37 -> 34] | Fiyat: [20,00 -> 20,00] | Konum: [Raf-A1 -> Raf-A1];2026-07-15 21:54:07.563
+31;6;GÜNCELLEME;-57;Ürün bilgileri güncellendi: Þeker;Nur;ADMIN;Ýsim: [Þeker -> Þeker] | Miktar: [675 -> 618] | Fiyat: [55,50 -> 55,50] | Konum: [Raf-S3 -> Raf-S3];2026-07-15 17:58:23.987
+30;5;GÜNCELLEME;0;Ürün bilgileri güncellendi: Pembe Gözlük;Nur;ADMIN;Ýsim: [Pembe Gözlük -> Pembe Gözlük] | Miktar: [95 -> 95] | Fiyat: [850,00 -> 850,00] | Konum: [Raf-G6 -> Raf-G6];2026-07-15 15:18:52.943
+29;5;GÜNCELLEME;0;Ürün bilgileri güncellendi: Pembe Gözlük;Nur;ADMIN;Ýsim: [Gözlük -> Pembe Gözlük] | Miktar: [95 -> 95] | Fiyat: [850,00 -> 850,00] | Konum: [Raf-G6 -> Raf-G6];2026-07-15 15:18:16.527
+28;4;GÜNCELLEME;22;Ürün bilgileri güncellendi: Ram;Nur;ADMIN;Ýsim: [Ram -> Ram] | Miktar: [257 -> 279] | Fiyat: [12500,00 -> 12500,00] | Konum: [Raf-G9 -> Raf-G9];2026-07-14 16:30:03.763
+27;3;GÜNCELLEME;0;Ürün bilgileri güncellendi: Deneme;Nur;ADMIN;Ýsim: [deneme -> Deneme] | Miktar: [37 -> 37] | Fiyat: [20,00 -> 20,00] | Konum: [Raf-A1 -> Raf-A1];2026-07-14 16:26:03.64
+26;5;GÜNCELLEME;95;Ürün bilgileri güncellendi: Gözlük;Nur;ADMIN;Ýsim: [Gözlük -> Gözlük] | Miktar: [10 -> 95] | Fiyat: [850,00 -> 850,00] | Konum: [Raf-G6 -> Raf-G6];2026-07-14 13:51:22.77
+25;5;GÜNCELLEME;10;Ürün bilgileri güncellendi: Gözlük;Nur;ADMIN;Ýsim: [Gözlük -> Gözlük] | Miktar: [15 -> 10] | Fiyat: [850,00 -> 850,00] | Konum: [Raf-G6 -> Raf-G6];2026-07-14 13:51:07.087
+24;5;GÜNCELLEME;15;Ürün bilgileri güncellendi: Gözlük;Nur;ADMIN;Ýsim: [Gözlük -> Gözlük] | Miktar: [20 -> 15] | Fiyat: [850,00 -> 850,00] | Konum: [Raf-G6 -> Raf-G6];2026-07-14 13:50:50.08
+23;5;GÜNCELLEME;20;Ürün bilgileri güncellendi: Gözlük;Nur;ADMIN;Ýsim: [Gözlük -> Gözlük] | Miktar: [140 -> 20] | Fiyat: [850,00 -> 850,00] | Konum: [Raf-G6 -> Raf-G6];2026-07-14 13:50:20.593
+22;3;GÜNCELLEME;37;Ürün bilgileri güncellendi: deneme;Nur;ADMIN;Ýsim: [deneme -> deneme] | Miktar: [5 -> 37] | Fiyat: [20,00 -> 20,00] | Konum: [Raf-A1 -> Raf-A1];2026-07-14 13:50:03.36
+21;3;GÜNCELLEME;5;Ürün bilgileri güncellendi: deneme;Nur;ADMIN;Ýsim: [deneme -> deneme] | Miktar: [100 -> 5] | Fiyat: [20,00 -> 20,00] | Konum: [Raf-A1 -> Raf-A1];2026-07-13 20:28:15.847
+20;5;GÜNCELLEME;140;Ürün bilgileri güncellendi: Gözlük;Nur;ADMIN;Ýsim: [Gözlük -> Gözlük] | Miktar: [162 -> 140] | Fiyat: [850,00 -> 850,00] | Konum: [Raf-G6 -> Raf-G6];2026-07-13 19:01:44.34
+19;4;GÜNCELLEME;257;Ürün bilgileri güncellendi: Ram;Nur;ADMIN;Ýsim: [Ram -> Ram] | Miktar: [235 -> 257] | Fiyat: [12500,00 -> 12500,00] | Konum: [Raf-G9 -> Raf-G9];2026-07-13 18:35:16.107
+17;6;GÜNCELLEME;675;Ürün bilgileri güncellendi: Þeker;Nur;ADMIN;Ýsim: [Þeker -> Þeker] | Miktar: [730 -> 675] | Fiyat: [55,50 -> 55,50] | Konum: [Raf-S3 -> Raf-S3];2026-07-13 18:23:08.0
+16;6;GÜNCELLEME;730;Ürün bilgileri güncellendi: Þeker;Nur;ADMIN;Ýsim: [Þeker -> Þeker] | Miktar: [710 -> 730] | Fiyat: [55,50 -> 55,50] | Konum: [Raf-S3 -> Raf-S3];2026-07-13 18:14:04.157
+15;6;GÜNCELLEME;710;Ürün bilgileri güncellendi: Þeker;Nur;ADMIN;Ýsim: [Þeker -> Þeker] | Miktar: [743 -> 710] | Fiyat: [55,50 -> 55,50] | Konum: [Raf-S3 -> Raf-S3];2026-07-13 18:13:35.987
+14;6;GÜNCELLEME;743;Ürün bilgileri güncellendi: Þeker;Nur;ADMIN;Ýsim: [Þeker -> Þeker] | Miktar: [766 -> 743] | Fiyat: [55,50 -> 55,50] | Konum: [Raf-S3 -> Raf-S3];2026-07-13 18:08:45.477
+13;7;GÜNCELLEME;206;Ürün bilgileri güncellendi: Tuz;Nur;ADMIN;Ýsim: [Tuz -> Tuz] | Miktar: [228 -> 206] | Fiyat: [32,50 -> 32,50] | Konum: [Raf-C37 -> Raf-C37];2026-07-13 18:04:44.44
+12;7;GÜNCELLEME;228;Ürün bilgileri güncellendi: Tuz;Nur;ADMIN;Ýsim: [Tuz -> Tuz] | Miktar: [228 -> 228] | Fiyat: [32,50 -> 32,50] | Konum: [Raf-c37 -> Raf-C37];2026-07-13 17:15:53.92
+11;7;STOCK IN;228;Sisteme yeni ürün eklendi: Tuz | Ýlk miktar: 228;Nur;ADMIN;null;2026-07-13 17:15:23.743
+10;6;GÜNCELLEME;766;Ürün bilgileri güncellendi: Þeker;Nur;ADMIN;Ýsim: [Þeker -> Þeker] | Miktar: [850 -> 766] | Fiyat: [55,50 -> 55,50] | Konum: [Raf-S3 -> Raf-S3];2026-07-13 17:14:03.623
+9;6;GÜNCELLEME;850;Ürün bilgileri güncellendi: Þeker;Nur;ADMIN;Ýsim: [Þeker -> Þeker] | Miktar: [877 -> 850] | Fiyat: [55,50 -> 55,50] | Konum: [Raf-S3 -> Raf-S3];2026-07-13 12:25:56.827
+8;6;GÜNCELLEME;877;Ürün bilgileri güncellendi: Þeker;Nur;ADMIN;Ýsim: [Þeker -> Þeker] | Miktar: [877 -> 877] | Fiyat: [55,00 -> 55,50] | Konum: [Raf-S3 -> Raf-S3];2026-07-13 12:25:31.717
+7;6;STOCK IN;877;Sisteme yeni ürün eklendi: Þeker | Ýlk miktar: 877;Nur;ADMIN;null;2026-07-13 12:24:47.45
+6;5;GÜNCELLEME;162;Ürün bilgileri güncellendi: Gözlük;Nur;ADMIN;Ýsim: [Gözlük -> Gözlük] | Miktar: [125 -> 162] | Fiyat: [850,00 -> 850,00] | Konum: [Raf-G6 -> Raf-G6];2026-07-12 19:23:52.28
+5;4;GÜNCELLEME;235;Ürün bilgileri güncellendi: Ram;Nur;ADMIN;Ýsim: [Ram -> Ram] | Miktar: [250 -> 235] | Fiyat: [12500,00 -> 12500,00] | Konum: [Raf-G9 -> Raf-G9];2026-07-12 19:23:27.25
+4;5;GÜNCELLEME;125;Ürün bilgileri güncellendi: Gözlük;Nur;ADMIN;Ýsim: [Gözlük -> Gözlük] | Miktar: [125 -> 125] | Fiyat: [870,00 -> 850,00] | Konum: [Raf-G5 -> Raf-G6];2026-07-12 16:37:14.833
+3;5;STOCK IN;125;Sisteme yeni ürün eklendi: Gözlük | Ýlk miktar: 125;Nur;ADMIN;null;2026-07-12 12:47:23.007
+2;4;STOCK IN;250;Sisteme yeni ürün eklendi: Ram | Ýlk miktar: 250;Nur;ADMIN;null;2026-07-11 23:13:50.953
+1;3;STOCK IN;100;Sisteme yeni ürün eklendi: deneme | Ýlk miktar: 100;Nur;ADMIN;null;2026-07-11 23:03:43.653
