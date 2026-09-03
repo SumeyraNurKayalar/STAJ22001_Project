@@ -15,7 +15,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;     // GÜN 14 İÇİN EKLENDİ
+import java.util.Map;
 import java.util.Scanner;
 import java.util.UUID;
 
@@ -23,10 +23,8 @@ public class App {
     private static List<Category> kategoriHavuzu = new ArrayList<>();
     private static List<Supplier> tedarikciHavuzu = new ArrayList<>();
     
-    // Oturumu açan aktif kullanıcıyı hafızada tutuyoruz
     private static User aktifKullanici = null;
 
-    // SHA-256 Şifre Hashleme Metodu
     private static String hashPassword(String password) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
@@ -48,7 +46,6 @@ public class App {
         WarehouseService warehouseService = new WarehouseService();
         Scanner scanner = new Scanner(System.in);
 
-        // Başlangıç Havuz Verileri
         kategoriHavuzu.add(new Category(1, "Elektronik"));
         tedarikciHavuzu.add(new Supplier(101, "Merkez Lojistik", "0555-111-2233"));
 
@@ -56,7 +53,6 @@ public class App {
         System.out.println("    DEPO YÖNETİM SİSTEMİ (MSSQL AUTH v3) ");
         System.out.println("=========================================");
 
-        // REAL MSSQL AUTHENTICATION & SECURE HASH CONTROL
          while (aktifKullanici == null) {
             System.out.println("\n--- GİRİŞ PANELİ ---");
             System.out.print("Kullanıcı Adı: ");
@@ -110,9 +106,7 @@ public class App {
         System.out.println("\n✔️ Giriş Başarılı! Oturum: " + aktifKullanici.getUsername().toUpperCase());
         System.out.println("🔑 Rol Yetkisi: [" + aktifKullanici.getRole() + "]");
 
-        // ANA MENÜ DÖNGÜSÜ
         while (true) {
-            // KRİTİK STOK UYARISI
             if (aktifKullanici.getRole() != Role.AUDITOR) {
                 try {
                     List<Product> kritikUrunler = warehouseService.getCriticalStockProducts();
@@ -128,7 +122,6 @@ public class App {
                 }
             }
 
-            // --- ROL BAZLI DİNAMİK TERMİNAL MENÜSÜ ---
             System.out.println("\n===== İŞLEM MENÜSÜ =====");
             System.out.println("[1] Tüm Depoyu Listele");
 
@@ -404,7 +397,6 @@ public class App {
         } else {
             System.out.println("✔️ Toplam " + bulunanUrunler.size() + " eşleşen kayıt listelendi:\n");
             for (Product p : bulunanUrunler) {
-                // Ürünün toString metodu otomatik tetiklenir
                 System.out.println(" -> " + p); 
             }
         }
@@ -413,9 +405,7 @@ public class App {
             }
         }
     }
-
-    // GÜN 14 ENTEGRASYONU: ASCII GRAFİK ÇİZEN ANALİTİK DASHBOARD METODU
-    // GÜN 14 GELİŞMİŞ ENTEGRASYON: PASTA VE MATRİS GRAFİKLERİ EKLENDİ
+    
     private static void istatistikDashboarduGoster(WarehouseService warehouseService) {
         System.out.println("\n📊 ==================================================");
         System.out.println("      DEPO GELİŞMİŞ ANALİTİK VE GRAFİK PANELİ      ");
@@ -428,7 +418,6 @@ public class App {
             return;
         }
 
-        // 1. GENEL DEPO DOLULUK ORANI (ÇUBUK GRAFİK)
         int maksimumKapasite = 5000; 
         int mevcutStok = warehouseService.getTotalProductQuantity();
         double dolulukOrani = ((double) mevcutStok / maksimumKapasite) * 100;
@@ -445,14 +434,12 @@ public class App {
         System.out.println("   Detay : " + mevcutStok + " / " + maksimumKapasite + " adet ürün aktif.");
 
 
-        // 2. KATEGORİ BAZLI PASTA GRAFİK SİMÜLASYONU (ORAN DAĞILIMI)
         System.out.println("\n🍕 [2] Ürün Dağılımı - Pasta Grafik Simülasyonu:");
         Map<String, Integer> kategoriVerileri = warehouseService.getCategoryStockDistribution();
         
         if (kategoriVerileri.isEmpty()) {
             System.out.println("   -> Veri bulunamadı.");
         } else {
-            // Pasta dilimi renk/karakter eşleştirmesi
             String[] dilimKarakterleri = {"▓▓", "▒▒", "░░", "██", "▒░"};
             int index = 0;
 
@@ -461,9 +448,8 @@ public class App {
                 String karakter = dilimKarakterleri[index % dilimKarakterleri.length];
                 index++;
 
-                // Pasta diliminin büyüklüğünü görselleştir
                 StringBuilder dilimGosterimi = new StringBuilder();
-                int dilimGenisligi = (int) (oran / 4); // her %4 için bir dilim parçası
+                int dilimGenisligi = (int) (oran / 4); 
                 for (int i = 0; i < dilimGenisligi; i++) {
                     dilimGosterimi.append(karakter);
                 }
@@ -473,32 +459,25 @@ public class App {
         }
 
 
-        // 3. FİYAT / STOK SEVİYESİ DEĞİŞİM MATRİSİ (X-Y SCATTER MAP)
         System.out.println("\n📈 [3] Ürün Fiyat Değişimi ve Risk Matrisi (Scatter Plot):");
         System.out.println("   (Y-Ekseni: Fiyat Seviyesi ▲ | X-Ekseni: Stok Miktarı ►)");
         System.out.println("   -------------------------------------------------");
 
-        // Konsol matrisi oluşturma (Yüksek fiyat-Düşük stok analizi için 5x5 sanal matris)
         char[][] matris = new char[5][20];
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 20; j++) matris[i][j] = ' ';
         }
 
-        // Ürünleri matrise yerleştir (Örnek eşik değerlerine göre normalize etme)
         for (Product p : tumUrunler) {
-            // Stok miktarını 0-19 arasına sıkıştır (Maksimum 500 adet varsayımıyla)
             int x = (int) (p.getQuantity() / 25); 
             if (x > 19) x = 19;
 
-            // Fiyatı 0-4 arasına sıkıştır (Maksimum 10.000 TL varsayımıyla)
             int y = (int) (p.getPrice() / 2000);
             if (y > 4) y = 4;
 
-            // Matriste Y ekseni yukarı doğru olduğu için (4 - y) şeklinde ters yerleştirilir
             matris[4 - y][x] = '*'; 
         }
 
-        // Matrisi Ekrana Bas
         for (int i = 0; i < 5; i++) {
             String seviyeEtiketi = switch (i) {
                 case 0 -> "Yüksek f$ ";
