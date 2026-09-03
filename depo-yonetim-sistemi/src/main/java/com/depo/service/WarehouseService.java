@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.table.DefaultTableModel; // 🎯 Seçim ekranı tablosu için eklendi
+import javax.swing.table.DefaultTableModel;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -23,27 +23,24 @@ import java.util.stream.Collectors;
 
 public class WarehouseService {
 
-    // 👑 YENİ METOT: MEVCUT YAPILARI BOZMADAN SEÇİM EKRANI İÇİN TABLO MODELİ ÜRETİR
     public DefaultTableModel getAllProductsForSelection() {
         DefaultTableModel model = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // Hücrelerin el ile düzenlenmesini engeller
+                return false;
             }
         };
 
-        // Seçim ekranı kolon başlıkları
         model.addColumn("Ürün Kodu");
         model.addColumn("Ürün Adı");
         model.addColumn("Kategori");
         model.addColumn("Stok");
 
-        // Sistemdeki mevcut ürünleri çekmek için kendi yazdığınız getAllProducts() metodunu kullanıyoruz 🎯
         List<Product> productList = getAllProducts();
         
         for (Product p : productList) {
             Object[] rowData = {
-                p.getId(), // ProductCode
+                p.getId(), 
                 p.getName(),
                 (p.getCategory() != null) ? p.getCategory().getName() : "Genel",
                 p.getQuantity()
@@ -54,17 +51,14 @@ public class WarehouseService {
         return model;
     }
 
-    // 1. Yeni Ürün Tanımlama (Deadlock ve Donma Engellenmiş Güvenli Versiyon)
     public void addProduct(Product product, int aktifUserId) {
     String sqlProduct = "INSERT INTO Products (ProductCode, Name, CategoryId, SupplierId, Quantity, Price, Location) VALUES (?, ?, ?, ?, ?, ?, ?)";
     
-    // 🎯 Sütunlarımızın SQL sırası: ProductId(1), MovementType(2), Quantity(3), Description(4), UserId(5), Details(6), MovementDate(7)
     String sqlLog = "INSERT INTO dbo.StockMovements (ProductId, MovementType, Quantity, Description, UserId, Details, MovementDate) VALUES (?, ?, ?, ?, ?, ?, ?)";
     
     try (Connection conn = DatabaseConfig.getConnection()) {
-        conn.setAutoCommit(false); // Transaction başlat
+        conn.setAutoCommit(false);
 
-        // Bağlantıyı yardımcı metotlara paslıyoruz 🎯
         int checkedCategoryId = checkAndInsertCategoryWithConnection(conn, product.getCategory());
         int checkedSupplierId = checkAndInsertSupplierWithConnection(conn, product.getSupplier());
 
@@ -89,25 +83,24 @@ public class WarehouseService {
                     }
                 }
 
-                // 🎯 DOĞRU PARAMETRE EŞLEŞTİRMESİ (Sıralama SQL ile birebir eşitlendi):
-                pstmtLog.setInt(1, generatedProductId);                                       // ProductId
-                pstmtLog.setString(2, "GİRİŞ");                                               // MovementType
-                pstmtLog.setInt(3, product.getQuantity());                                    // Quantity
-                pstmtLog.setString(4, "Sisteme yeni ürün eklendi: " + product.getName());      // Description
-                pstmtLog.setInt(5, aktifUserId);                                              // UserId
-                pstmtLog.setString(6, "İlk Stok Girişi | Miktar: " + product.getQuantity());   // Details
-                pstmtLog.setTimestamp(7, java.sql.Timestamp.valueOf(LocalDateTime.now()));     // MovementDate
+                pstmtLog.setInt(1, generatedProductId);
+                pstmtLog.setString(2, "GİRİŞ");
+                pstmtLog.setInt(3, product.getQuantity());
+                pstmtLog.setString(4, "Sisteme yeni ürün eklendi: " + product.getName());
+                pstmtLog.setInt(5, aktifUserId);
+                pstmtLog.setString(6, "İlk Stok Girişi | Miktar: " + product.getQuantity());
+                pstmtLog.setTimestamp(7, java.sql.Timestamp.valueOf(LocalDateTime.now()));
                 
                 pstmtLog.executeUpdate();
                 
-                conn.commit(); // Başarılıysa tek seferde diske yaz
+                conn.commit();
                 System.out.println("✅ Ürün ve Log başarıyla kaydedildi.");
             } else {
                 conn.rollback();
             }
             
         } catch (SQLException e) {
-            conn.rollback(); // Hata oluşursa değişiklikleri geri al
+            conn.rollback(); 
             throw e;
         } finally {
             conn.setAutoCommit(true);
@@ -119,11 +112,8 @@ public class WarehouseService {
 }
 
 public void addProduct(Product product) {
-    // Eğer userId belirtilmemişse varsayılan olarak 1 (Admin/Sistem) id'si ile kaydeder
     addProduct(product, 1); 
 }
-
-    // --- DEADLOCK ENGELLEYEN BAĞLANTI PAYLAŞIMLI YARDIMCI METOTLAR ---
 
     private int checkAndInsertCategoryWithConnection(Connection conn, Category cat) throws SQLException {
         String checkSql = "SELECT Id FROM dbo.Categories WHERE Name = ?";
@@ -177,8 +167,6 @@ public void addProduct(Product product) {
         }
         return 1;
     }
-
-    // --- DİĞER STANDART METOTLAR (Donma Yapmayanlar) ---
 
     public List<Product> getAllProducts() {
         List<Product> products = new ArrayList<>();
@@ -235,7 +223,6 @@ public void addProduct(Product product) {
     }
 
     public int getLatestProductIdByCode(String productCode) {
-    // Sütun adı tam olarak veritabanındaki gibi 'Id' yapıldı 🎯
     String sql = "SELECT Id FROM Products WHERE ProductCode = ?";
     try (Connection conn = DatabaseConfig.getConnection();
          PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -248,7 +235,7 @@ public void addProduct(Product product) {
     } catch (SQLException e) {
         System.out.println("❌ Product ID çekilirken hata oluştu: " + e.getMessage());
     }
-    return -1; // Hatalı durumu yakalamak için -1 dönüyoruz
+    return -1;
 }
 
     public boolean updateProduct(String productCode, Product newProduct, int aktifUserId) {
@@ -261,9 +248,8 @@ public void addProduct(Product product) {
     int realProductId = getLatestProductIdByCode(productCode);
 
     try (Connection conn = DatabaseConfig.getConnection()) {
-        conn.setAutoCommit(false); // Transaction başlat 🎯
+        conn.setAutoCommit(false);
 
-        // Bağlantıyı kaybetmeden kategori ve tedarikçi kontrolünü yapıyoruz
         int checkedCategoryId = checkAndInsertCategoryWithConnection(conn, newProduct.getCategory());
         int checkedSupplierId = checkAndInsertSupplierWithConnection(conn, newProduct.getSupplier());
 
@@ -273,7 +259,6 @@ public void addProduct(Product product) {
         try (PreparedStatement pstmt = conn.prepareStatement(sqlUpdate);
              PreparedStatement pstmtLog = conn.prepareStatement(sqlLog)) {
             
-            // 1. Ürün Güncelleme Parametreleri
             pstmt.setString(1, newProduct.getName());
             pstmt.setInt(2, checkedCategoryId);
             pstmt.setInt(3, checkedSupplierId);
@@ -285,7 +270,6 @@ public void addProduct(Product product) {
             int affectedRows = pstmt.executeUpdate();
             
             if (affectedRows > 0) {
-                // Değişim log detaylarını güvenli string formatı ile hazırlıyoruz (NullPointerException korumalı)
                 String oldName = oldProduct.getName() != null ? oldProduct.getName() : "Belirsiz";
                 String newName = newProduct.getName() != null ? newProduct.getName() : "Belirsiz";
                 String oldLoc = oldProduct.getStorageLocation() != null ? oldProduct.getStorageLocation() : "Yok";
@@ -299,29 +283,27 @@ public void addProduct(Product product) {
                     oldLoc, newLoc
                 );
                 
-                // Stok miktarındaki değişimi hesaplıyoruz (Mevcut stok - Eski stok)
                 int miktarFarki = newProduct.getQuantity() - oldProduct.getQuantity();
 
-                // 2. Log Ekleme Parametreleri (Parametreler SQL sırasıyla birebir eşlendi)
-                pstmtLog.setInt(1, realProductId);                                              // ProductId
-                pstmtLog.setString(2, "GÜNCELLEME");                                            // MovementType
-                pstmtLog.setInt(3, miktarFarki);                                                // Quantity (Yapılan net stok değişimi)
-                pstmtLog.setString(4, "Ürün bilgileri güncellendi: " + newName);                // Description
-                pstmtLog.setInt(5, aktifUserId);                                                // UserId
-                pstmtLog.setString(6, detaylar);                                                // Details
-                pstmtLog.setTimestamp(7, java.sql.Timestamp.valueOf(LocalDateTime.now()));       // MovementDate
+                pstmtLog.setInt(1, realProductId);
+                pstmtLog.setString(2, "GÜNCELLEME");
+                pstmtLog.setInt(3, miktarFarki);
+                pstmtLog.setString(4, "Ürün bilgileri güncellendi: " + newName);
+                pstmtLog.setInt(5, aktifUserId);
+                pstmtLog.setString(6, detaylar);
+                pstmtLog.setTimestamp(7, java.sql.Timestamp.valueOf(LocalDateTime.now()));
                 
                 pstmtLog.executeUpdate();
 
-                conn.commit(); // Her iki işlem de başarılıysa veritabanına tek seferde yaz 🚀
+                conn.commit();
                 System.out.println("✅ Ürün başarıyla güncellendi ve sistem günlüğüne kaydedildi.");
                 return true;
             } else {
-                conn.rollback(); // Güncelleme başarısızsa değişiklikleri geri al
+                conn.rollback();
             }
             
         } catch (SQLException e) {
-            conn.rollback(); // Herhangi bir SQL hatasında işlemi güvenle geri sar
+            conn.rollback();
             System.out.println("❌ Güncelleme sırasında SQL Hatası: " + e.getMessage());
             throw e;
         } finally {
@@ -343,7 +325,6 @@ public void addProduct(Product product) {
         pstmt.setString(2, productCode); 
         pstmt.executeUpdate();
         
-        // Buranın tam doğru ID'yi ve dbo.StockMovements tablosunu tetiklediğinden emin oluyoruz
         saveMovement(getLatestProductIdByCode(productCode), "GİRİŞ", quantity, "Manuel giriş.", aktifUserId, "Stok arttı.");
         return true;
     } catch (SQLException e) {
@@ -387,7 +368,6 @@ public void addProduct(Product product) {
     public List<StockMovement> getMovementHistory() {
     List<StockMovement> list = new ArrayList<>();
     
-    // 🎯 SSMS'ten doğruladığımız gerçek kolon adlarıyla yazılmış pürüzsüz SQL sorgusu
     String sql = "SELECT sm.Id, sm.ProductId, sm.MovementType, sm.Quantity, sm.Description, sm.UserId, sm.Details, sm.MovementDate, " +
                  "       p.Name AS productName, " +
                  "       u.username AS dbUserName, " +
@@ -415,7 +395,6 @@ public void addProduct(Product product) {
                 rs.getTimestamp("MovementDate") != null ? rs.getTimestamp("MovementDate").toLocalDateTime() : java.time.LocalDateTime.now()
             );
             
-            // Veritabanından gelen gerçek isimleri modele dolduruyoruz
             String pName = rs.getString("productName");
             sm.setProductName(pName != null && !pName.isEmpty() ? pName : "Ürün ID: " + sm.getProductId()); 
 
@@ -430,7 +409,6 @@ public void addProduct(Product product) {
         System.out.println("🚀 [MÜKEMMEL] Sistem günlükleri ANA sorguyla tamamen hatasız yüklendi. Kayıt: " + list.size());
         
     } catch (SQLException e) {
-        // Artık DatabaseName düzgün ayarlandığı için bu catch bloğuna neredeyse hiç düşmeyeceksin!
         System.out.println("❌ Kritik SQL Hatası: " + e.getMessage());
     }
     return list;
@@ -596,15 +574,12 @@ public void addProduct(Product product) {
         return new Category(1, "Genel"); 
     }
 
-    // 🎯 YENİ EKLENEN VE HALIHAZIRDAKİ "DatabaseConfig" YAPISINA TAM UYUMLU METOTLAR:
    public void addStockMovement(String productCode, String movementType, int quantity, String description, int userId) throws Exception {
-    // 1. Ürünü buluyoruz
     Product product = getProductById(productCode); 
     if (product == null) {
         throw new Exception("Ürün bulunamadı!");
     }
 
-    // 2. Miktar ve Stok Hesaplaması
     int mutlakMiktar = Math.abs(quantity); 
     int yeniStok = product.getQuantity();
 
@@ -617,11 +592,9 @@ public void addProduct(Product product) {
         yeniStok -= mutlakMiktar; 
     }
     
-    // 3. Ürün Stok Adedini Güncelleme
     product.setQuantity(yeniStok);
     updateProduct(productCode, product, userId); 
 
-    // 🎯 4. PRODUCTS TABLOSUNDAN GERÇEK SAYISAL ID'Yİ ALMA (Gerçek Sütun Adı: ProductCode)
     int gercekSayisalId = -1;
     String idSorgusu = "SELECT Id FROM dbo.Products WHERE ProductCode = ? OR CAST(Id AS VARCHAR) = ?"; 
 
@@ -642,7 +615,6 @@ public void addProduct(Product product) {
         throw new Exception("Ürüne ait veritabanı referans ID'si bulunamadı!");
     }
 
-    // 🎯 5. STOCKMOVEMENTS TABLOSUNA LOG KAYDI (Birebir Veritabanı Sütun İsimleri)
     String insertQuery = "INSERT INTO dbo.StockMovements (ProductId, UserId, MovementType, Quantity, MovementDate, Description, Details) " +
                           "VALUES (?, ?, ?, ?, ?, ?, ?)";
     
@@ -670,12 +642,7 @@ public void addProduct(Product product) {
     }
 }
 
-    // 2. DÜZELTİLMİŞ LOG LİSTELEME METODU
-    
-
         public int getCriticalStockCount() {
-        // 🎯 Veritabanındaki Products tablosunda stok miktarı (Quantity) 10 veya daha az olan ürünleri sayar.
-        // Eğer projendeki kritik sınır farklıysa '10' sayısını değiştirebilirsin.
         String sql = "SELECT COUNT(*) AS kritikAdet FROM dbo.Products WHERE Quantity <= 10";
         try (Connection conn = DatabaseConfig.getConnection();
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -686,11 +653,10 @@ public void addProduct(Product product) {
         } catch (SQLException e) {
             System.out.println("❌ Kritik stok sayısı veritabanından çekilemedi: " + e.getMessage());
         }
-        return 0; // Hata durumunda sistemi çökertmemek için 0 dönüyoruz
+        return 0;
     }
 
     public boolean saveStockMovement(int productId, String movementType, int quantity, String description, int userId) {
-    // Sütun ve tablo isimlerini veritabanı şemana (Id ve StockMovements) göre eşliyoruz:
     String sql = "INSERT INTO dbo.StockMovements (ProductId, MovementType, Quantity, Description, UserId, MovementDate) " +
                  "VALUES (?, ?, ?, ?, ?, GETDATE())";
                  
@@ -714,10 +680,6 @@ public void addProduct(Product product) {
 public List<StockMovement> getAllStockMovements() {
     List<StockMovement> list = new ArrayList<>();
     
-    // 🟢 Görsellerdeki MSSQL şemasıyla %100 birebir uyumlu hale getirildi:
-    // - StockMovements: sm.Id, sm.ProductId, sm.UserId, sm.MovementType, sm.Quantity, sm.Description, sm.Details, sm.MovementDate
-    // - Products: p.Id, p.Name
-    // - users: u.id, u.username, u.role (Küçük harflere dikkat edildi)
     String sql = "SELECT sm.Id AS log_id, sm.ProductId, p.Name AS ProdName, sm.MovementType, " +
                  "sm.Quantity, sm.Description AS Reason, sm.UserId, u.username AS OpName, " +
                  "u.role AS OpRole, sm.Details AS Details, sm.MovementDate " +
@@ -731,7 +693,6 @@ public List<StockMovement> getAllStockMovements() {
          ResultSet rs = pstmt.executeQuery()) {
 
         while (rs.next()) {
-            // Gerçek log ID'si veritabanından çekiliyor
             String id = String.valueOf(rs.getInt("log_id")); 
             
             String productId = String.valueOf(rs.getInt("ProductId"));
@@ -746,7 +707,6 @@ public List<StockMovement> getAllStockMovements() {
                 timestamp = rs.getTimestamp("MovementDate").toLocalDateTime();
             }
 
-            // Model nesnemizi orijinal yapısıyla ayağa kaldırıyoruz
             StockMovement sm = new StockMovement(id, productId, movementType, quantity, reason, userId, details, timestamp);
             
             String pName = rs.getString("ProdName");
@@ -766,7 +726,6 @@ public List<StockMovement> getAllStockMovements() {
         System.out.println("❌ Ana sorgu başarısız oldu! Hata: " + e.getMessage());
         System.out.println("⚠️ Güvenli yedek kurtarma sorgusu doğrudan devreye alınıyor...");
         
-        // Users tablosuna dokunmayan, sadece StockMovements ve Products tablolarını bağlayan yedek sorgu:
         String fallbackSql = "SELECT sm.Id AS fallback_id, sm.ProductId, sm.MovementType, sm.Quantity, sm.Description, sm.UserId, sm.Details, sm.MovementDate, " +
                              "       p.Name AS productName " +
                              "FROM dbo.StockMovements sm " +
@@ -777,7 +736,7 @@ public List<StockMovement> getAllStockMovements() {
              PreparedStatement pstmt = conn.prepareStatement(fallbackSql);
              ResultSet rs = pstmt.executeQuery()) {
              
-            list.clear(); // Listeyi sıfırla ki mükerrer kayıt olmasın
+            list.clear();
             int sanalId = 1;
 
             while (rs.next()) {
@@ -794,7 +753,6 @@ public List<StockMovement> getAllStockMovements() {
                     rs.getTimestamp("MovementDate") != null ? rs.getTimestamp("MovementDate").toLocalDateTime() : java.time.LocalDateTime.now()
                 );
                 
-                // Ürün ismini gerçek isimle dolduruyoruz
                 String pName = rs.getString("productName");
                 sm.setProductName(pName != null && !pName.isEmpty() ? pName : "Ürün ID: " + sm.getProductId());
                 sm.setUserName("Sistem");
@@ -809,12 +767,8 @@ public List<StockMovement> getAllStockMovements() {
     }
     return list;
 }
-// 📌 YEDEK SORGU: Eğer yukarıdaki sorguda Products tablosundaki 'p.id' veya Users tablosundaki 'u.id' kısmından dolayı
-// yine bir 'id' uyuşmazlığı hatası yaşanırsa, veritabanındaki TÜM ilişkileri kesip doğrudan veriyi getiren ZIRHLI sorgu:
 private List<StockMovement> getAllStockMovementsGarantiliYedekSorgu() {
     List<StockMovement> list = new ArrayList<>();
-    
-    // Sadece StockMovements tablosunun kendi kolonlarını çeker, hiçbir JOIN yapmaz!
     String sql = "SELECT ProductId, MovementType, Quantity, description AS Reason, UserId, details AS Details, MovementDate " +
                  "FROM dbo.StockMovements " +
                  "ORDER BY MovementDate DESC";
@@ -851,7 +805,6 @@ private List<StockMovement> getAllStockMovementsGarantiliYedekSorgu() {
     }
     return list;
 }
-// 📌 ALTERNATİF ŞEMA: Eğer Products tablosunda birincil anahtar küçük harfli 'id' değil de büyük harfli 'Id' ise:
 private List<StockMovement> getAllStockMovementsAlternatifSorgu() {
     List<StockMovement> list = new ArrayList<>();
     
@@ -878,8 +831,6 @@ private List<StockMovement> getAllStockMovementsAlternatifSorgu() {
     }
 }
 
-// 📌 KURTARMA SORGUSU: Hiçbir join bağlantısı kurmadan, sadece StockMovements tablosunun kendisini çeker. 
-// Bu sayede Products ve Users tablolarındaki hiçbir uyuşmazlıktan etkilenmez ve tabloyu kesinlikle doldurur!
 private List<StockMovement> getAllStockMovementsKurtarmaSorgusu() {
     List<StockMovement> list = new ArrayList<>();
     
@@ -906,7 +857,7 @@ private List<StockMovement> getAllStockMovementsKurtarmaSorgusu() {
             }
 
             StockMovement sm = new StockMovement(id, productId, movementType, quantity, reason, userId, details, timestamp);
-            sm.setProductName("Ürün ID: " + productId); // Join yapamadığımız için geçici olarak ID yazarız
+            sm.setProductName("Ürün ID: " + productId);
             sm.setUserName("Kullanıcı ID: " + userId);
             sm.setUserRole("USER");
 
@@ -919,7 +870,6 @@ private List<StockMovement> getAllStockMovementsKurtarmaSorgusu() {
     return list;
 }
 
-// Ortak veri dönüştürme yardımcısı
 private StockMovement extractStockMovement(ResultSet rs) throws SQLException {
     String id = String.valueOf(rs.getInt("LogId"));
     String productId = String.valueOf(rs.getInt("ProductId"));
@@ -948,11 +898,8 @@ private StockMovement extractStockMovement(ResultSet rs) throws SQLException {
     return sm;
 }
 
-/**
- * Stok miktarı belirlenen kritik eşiğin (örneğin 10) altında olan ürünleri getirir.
- */
 public List<Product> getLowStockProducts() {
-    int kritikEsik = 10; // İsteğe göre kritik stok sınırını değiştirebilirsiniz
+    int kritikEsik = 10; 
     
     List<Product> tumUrunler = getAllProducts();
     if (tumUrunler == null) {
@@ -964,9 +911,6 @@ public List<Product> getLowStockProducts() {
             .collect(Collectors.toList());
 }
 
-/**
- * Belirli bir tedarikçinin (UserId) yaptığı en son stok giriş tarihini getirir.
- */
 public String getLastSupplierMovementDate(int userId) {
     String sql = "SELECT TOP 1 MovementDate FROM dbo.StockMovements " +
                  "WHERE UserId = ? AND MovementType = 'STOK_GİRİŞ' " +
@@ -992,10 +936,8 @@ public String getLastSupplierMovementDate(int userId) {
     return "Henüz Kayıt Yok";
 }
 
-// 🎯 1. Tedarikçinin Tüm Firma Bilgilerini ve Açıklamasını Getirir
 public Map<String, String> getSupplierProfile(int userId) {
     Map<String, String> profile = new HashMap<>();
-    // 🔴 '=' yerine 'IN' ve TOP 1 eklendi
     String sql = "SELECT Name, ContactPerson, Phone, Email, TaxNumber, Description FROM dbo.Suppliers " +
                  "WHERE ContactPerson IN (SELECT TOP 1 Username FROM dbo.Users WHERE Id = ?) " +
                  "OR Name IN (SELECT TOP 1 Username FROM dbo.Users WHERE Id = ?)";
@@ -1023,7 +965,6 @@ public Map<String, String> getSupplierProfile(int userId) {
     return profile;
 }
 
-// 🎯 2. Tedarikçinin Firma Bilgilerini Günceller
 public boolean updateSupplierProfile(int userId, String companyName, String phone) throws Exception {
     String sql = "UPDATE dbo.Suppliers " +
                  "SET Phone = ? " +
@@ -1042,10 +983,7 @@ public boolean updateSupplierProfile(int userId, String companyName, String phon
     }
 }
 
-// 🎯 Tedarikçinin Firma Bilgilerini Günceller
 public boolean updateSupplierProfile(int userId, String companyName, String contactPerson, String phone, String email, String taxInfo, String description) throws Exception {
-    // 🔴 'WHERE Id = ?' mantığına geçerek metin eşleşme riskini tamamen sıfırlıyoruz.
-    // Eğer userId doğrudan Supplier Id değilse, Users tablosundaki Id eşleşmesini kullanır:
     String sql = "UPDATE dbo.Suppliers SET Name = ?, ContactPerson = ?, Phone = ?, Email = ?, TaxNumber = ?, Description = ? " +
                  "WHERE Id = ? OR ContactPerson = (SELECT TOP 1 Username FROM dbo.Users WHERE Id = ?)";
 
@@ -1058,12 +996,11 @@ public boolean updateSupplierProfile(int userId, String companyName, String cont
         pstmt.setString(4, email);
         pstmt.setString(5, taxInfo);
         pstmt.setString(6, description);
-        pstmt.setInt(7, userId); // Doğrudan ID üzerinden yakalar
+        pstmt.setInt(7, userId);
         pstmt.setInt(8, userId);
 
         int rows = pstmt.executeUpdate();
         
-        // Konsoldan kaç satırın güncellendiğini görelim (Hata ayıklama için)
         System.out.println("🔄 Güncellenen satır sayısı: " + rows);
         
         return rows > 0;
@@ -1072,17 +1009,14 @@ public boolean updateSupplierProfile(int userId, String companyName, String cont
     }
 }
 
-// 🎯 1. Geçmiş Stok Hareketlerini Getirir
 public List<String> getStockMovementLogs() throws Exception {
     List<String> logs = new ArrayList<>();
     
-    // SQL sorgusu: Ürün adı ile hareket türü, miktar ve tarihi çeker
     String sql = "SELECT sm.id, p.name AS ProductName, sm.movement_type, sm.quantity, sm.created_at " +
                  "FROM dbo.StockMovements sm " +
                  "INNER JOIN dbo.Products p ON p.id = sm.product_id " +
                  "ORDER BY sm.created_at DESC";
 
-    // Tarih formatını daha düzenli (Yıl-Ay-Gün Saat:Dakika:Saniye) göstermek için:
     java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     try (Connection conn = DatabaseConfig.getConnection();
@@ -1097,7 +1031,6 @@ public List<String> getStockMovementLogs() throws Exception {
             String movementType = rs.getString("movement_type");
             int quantity = rs.getInt("quantity");
 
-            // Formatlı log metni oluşturma
             String log = String.format("[%s] Ürün: %s | İşlem: %s | Miktar: %d",
                     formattedDate,
                     (productName != null ? productName : "Bilinmeyen Ürün"),
@@ -1113,10 +1046,7 @@ public List<String> getStockMovementLogs() throws Exception {
     return logs;
 }
 
-// 2. Depodaki Toplam Envanter Mali Değerini Hesaplar (Fiyat * Stok Miktarı)
-// 🎯 AUDITOR: Depodaki Toplam Envanter Mali Değerini Hesaplar
 public double getTotalInventoryValue() throws Exception {
-    // stock_quantity yerine veritabanınızdaki doğru sütun olan Quantity (veya Stock) kullanıldı
     String sql = "SELECT SUM(Price * Quantity) AS TotalValue FROM dbo.Products";
     try (Connection conn = DatabaseConfig.getConnection();
          PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -1130,11 +1060,7 @@ public double getTotalInventoryValue() throws Exception {
     }
     return 0.0;
 }
-
-// 🎯 2. Son 24 Saat Yüksek Miktarlı Çıkış Sayısı (Anomali)
-// 1. Kritik Stok Seviyesindeki Ürün Sayısı
-// 1. Kritik Stok Seviyesindeki Ürün Sayısı
-// 🎯 1. Kritik Stok Altındaki Ürün Sayısı
+    
 public int getLowStockCount() {
     int count = 0;
     String sql = "SELECT COUNT(*) FROM dbo.Products WHERE quantity <= min_stock_level";
@@ -1151,7 +1077,6 @@ public int getLowStockCount() {
     return count;
 }
 
-// 🎯 2. Son 24 Saat Yüksek Miktarlı Çıkış Sayısı (Anomali)
 public int getHighVolumeOutflowCount(int threshold) {
     int count = 0;
     String sql = "SELECT COUNT(*) FROM dbo.StockMovements " +
@@ -1173,11 +1098,9 @@ public int getHighVolumeOutflowCount(int threshold) {
     return count;
 }
 
-// 🎯 3. Tarih Aralıklı Log Getirme Metodu
 public List<StockMovement> getLogsByDateRange(LocalDate baslangic, LocalDate bitis) {
     List<StockMovement> list = new ArrayList<>();
     
-    // 🟢 'u.id', 'u.username', 'u.role' küçük harf yapıldı!
     StringBuilder sql = new StringBuilder(
         "SELECT sm.Id AS log_id, sm.ProductId, p.Name AS ProdName, sm.MovementType, " +
         "sm.Quantity, sm.Description AS Reason, sm.UserId, u.username AS OpName, " +
