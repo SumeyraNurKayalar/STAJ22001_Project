@@ -1,8 +1,5 @@
 package com.depo.model;
 
-/**
- * Tedarikçi ve Firma verilerini temsil eden model sınıfı.
- */
 public class CompanyModel {
 
     private int id;
@@ -13,11 +10,9 @@ public class CompanyModel {
     private String taxNumber;
     private String description;
 
-    // Parametresiz Constructor
     public CompanyModel() {
     }
 
-    // 7 Parametreli Constructor
     public CompanyModel(int id, String companyName, String contactPerson, String phone, String email, String taxNumber, String description) {
         this.id = id;
         this.companyName = companyName;
