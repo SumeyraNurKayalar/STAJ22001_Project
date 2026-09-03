@@ -13,7 +13,6 @@ public class PasswordUtil {
                 if (hex.length() == 1) hexString.append('0');
                 hexString.append(hex);
             }
-            // 💡 KRİTİK DÜZELTME: Karşılaştırmaların patlamaması için çıktıyı tamamen küçük harfe ve temiz stringe zorluyoruz.
             return hexString.toString().toLowerCase().trim();
         } catch (Exception ex) {
             throw new RuntimeException(ex);
