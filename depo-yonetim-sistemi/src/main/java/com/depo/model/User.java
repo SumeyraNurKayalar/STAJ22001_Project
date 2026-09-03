@@ -1,12 +1,11 @@
 package com.depo.model;
 
 public class User {
-    private int id; // GÜN 12 ENTEGRASYONU: Veritabanı ID takibi için eklendi
+    private int id; 
     private String username;
     private String password;
     private Role role;
 
-    // Ana Constructor (App.java içindeki veritabanı girişinde çağrılan)
     public User(int id, String username, String password, Role role) {
         this.id = id;
         this.username = username;
@@ -14,15 +13,12 @@ public class User {
         this.role = role;
     }
 
-    // Eski kodların veya testlerin patlamaması için Overload Constructor
     public User(String username, String password, Role role) {
         this.username = username;
         this.password = password;
         this.role = role;
     }
 
-    // --- GETTERS & SETTERS ---
-    
     public int getId() { 
         return id; 
     }
