@@ -1,13 +1,13 @@
 package com.depo.model;
 
 public class Product {
-    private String id; // Benzersiz Barkod ID
+    private String id;
     private String name;
     private Category category;
     private Supplier supplier;
     private int quantity;
     private double price;
-    private String storageLocation; // Örn: "Raf-A1", "Blok-B"
+    private String storageLocation;
 
     public Product(String id, String name, Category category, Supplier supplier, int quantity, double price, String storageLocation) {
         this.id = id;
@@ -19,7 +19,6 @@ public class Product {
         this.storageLocation = storageLocation;
     }
 
-    // Encapsulation (Getter / Setter)
     public String getId() { return id; }
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
@@ -42,6 +41,6 @@ public class Product {
     }
 
     public boolean isStockCritical() {
-        return this.quantity <= 10; // Stok 10 veya daha azsa kritik kabul et
+        return this.quantity <= 10;
     }
 }
