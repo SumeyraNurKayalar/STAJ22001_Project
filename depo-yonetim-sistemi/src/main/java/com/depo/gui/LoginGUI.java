@@ -61,7 +61,6 @@ public class LoginGUI {
         Label lblHata = new Label();
         lblHata.setTextFill(Color.web("#e74c3c"));
 
-        // Giriş Aksiyonu
         btnLogin.setOnAction(e -> {
             String user = txtUsername.getText().trim();
             String pass = txtPassword.getText();
@@ -91,7 +90,6 @@ public class LoginGUI {
         stage.show();
     }
 
-    // 💡 Şifre Sıfırlama Penceresi (Şifre Güvenlik Kontrollü)
     private void sifremiUnuttumPenceresiniAc() {
         Stage dialog = new Stage();
         dialog.initModality(Modality.APPLICATION_MODAL);
@@ -148,7 +146,6 @@ public class LoginGUI {
                 return;
             }
 
-            // 🛡️ ŞİFRE GÜVENLİK KONTROLÜ
             String hata = sifreKontrolEt(pass);
             if (hata != null) {
                 lblPopUpMesaj.setTextFill(Color.web("#e74c3c"));
@@ -227,7 +224,6 @@ public class LoginGUI {
                 return;
             }
 
-            // 🛡️ ŞİFRE GÜVENLİK KONTROLÜ
             String hata = sifreKontrolEt(pass);
             if (hata != null) {
                 lblMesaj.setTextFill(Color.web("#e74c3c"));
@@ -274,7 +270,6 @@ public class LoginGUI {
             } else if (Character.isDigit(c)) {
                 rakamVar = true;
             } else {
-                // Harf ve rakam dışındaki her şey özel simgedir
                 simgeVar = true;
             }
         }
@@ -291,6 +286,6 @@ public class LoginGUI {
             return "Şifre en az 1 adet özel simge (!, @, #, $, %, vb.) içermelidir!";
         }
 
-        return null; // Tüm koşullar sağlandı
+        return null;
     }
 }
