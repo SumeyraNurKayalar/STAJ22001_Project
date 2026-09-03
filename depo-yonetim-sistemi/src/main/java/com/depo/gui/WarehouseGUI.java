@@ -52,28 +52,21 @@ public class WarehouseGUI extends Application {
 
     private final WarehouseService warehouseService = new WarehouseService();
     
-    // Ana Paneller ve Bileşenler
     private BorderPane anaDuzen;
     private StackPane icerikAlani;
     private TableView<Product> urunTablosu;
     private TableView<StockMovement> logTablosu;
     
-    // Dashboard Metrik Etiketleri
     private Label lblToplamStok;
     private Label lblKritikUrunSayisi;
     private Label lblKategoriSayisi;
     private VBox kartKategoriAlani;
     
-    // Grafikleri dinamik yenilemek için sınıf düzeyinde tanımlıyoruz
     private HBox grafikKonteynir;
 
-    // Dinamik kullanıcı bilgileri
     private String aktifKullanici;
     private String aktifRol;
     private int aktifUserId;
-
-    // WarehouseGUI.java dosyasının en altındaki CompanyModel sınıfını bu kodla güncelleyin:
-
 
     public WarehouseGUI() {
         this.aktifKullanici = "Misafir";
@@ -101,15 +94,12 @@ public class WarehouseGUI extends Application {
         icerikAlani.setPadding(new Insets(20));
         icerikAlani.setStyle("-fx-background-color: #1e1e24;");
 
-        // 1. ÜST PANEL
         HBox header = olusturHeader();
         anaDuzen.setTop(header);
 
-        // 2. SOL PANEL
         VBox sidebar = olusturSidebar();
         anaDuzen.setLeft(sidebar);
 
-        // 3. ORTA PANEL
         anaDuzen.setCenter(icerikAlani);
         navigasyonDegistir("Dashboard");
 
@@ -118,7 +108,7 @@ public class WarehouseGUI extends Application {
         primaryStage.show();
     }
 
-    // --- BÖLÜM 1: UI PANELLERİNİN TASARIMI ---
+    //---UI PANELLERİNİN TASARIMI---//
 
     private HBox olusturHeader() {
         HBox header = new HBox();
@@ -159,11 +149,8 @@ public class WarehouseGUI extends Application {
     Button btnKullaniciYonetimi = new Button("👥 Personel Yönetimi");
     Button btnFirmaYonetimi = new Button("🏢 Firma Yönetimi");
 
-
-    // 🎯 AUDITOR Özel Yetki: Envanter Mali Değer Raporu Butonu
 Button btnMaliRapor = new Button("💰 Envanter Mali Raporu");
 
-    // 1. Tüm butonların stil ve hover efektlerini ayarlıyoruz (btnFirmaYonetimi dahil)
     Button[] tumButonlar = new Button[]{
         btnDashboard, btnStokListesi, btnStokIslemleri, btnFirmaBilgileri, 
         btnUrunEkle, btnUrunGuncelle, btnLoglar, btnKullaniciYonetimi, 
@@ -178,7 +165,6 @@ Button btnMaliRapor = new Button("💰 Envanter Mali Raporu");
         btn.setOnMouseExited(e -> btn.setStyle(buttonStyle));
     }
 
-    // 2. Tıklama Aksiyonları (Sayfa Yönlendirmeleri)
     btnDashboard.setOnAction(e -> navigasyonDegistir("Dashboard"));
     btnStokListesi.setOnAction(e -> navigasyonDegistir("StokListesi"));
     btnStokIslemleri.setOnAction(e -> navigasyonDegistir("StokIslemleri"));
@@ -193,32 +179,23 @@ Button btnMaliRapor = new Button("💰 Envanter Mali Raporu");
     btnFirmaYonetimi.setOnAction(e -> navigasyonDegistir("FirmaYonetimi"));
     btnMaliRapor.setOnAction(e -> navigasyonDegistir("EnvanterMaliRaporu"));
 
-    // 🔴 3. ROLE GÖRE MENÜYÜ FİLTRELEME VE EKRANA EKLEME
-
-    // Ekranı temizle (Çift ekleme hatasını kesin önlemek için)
     sidebar.getChildren().clear();
 
-    // Temel Menüler (Dashboard ve Stok Listesi tüm rollerde ortak)
     sidebar.getChildren().addAll(btnDashboard, btnStokListesi);
 
-    // AUDITOR (Denetçi) ise Stok Giriş/Çıkış Engellenir, Sadece Log ve Mali Rapor Eklenir
     if ("AUDITOR".equalsIgnoreCase(aktifRol)) {
         sidebar.getChildren().addAll(btnLoglar, btnMaliRapor);
     } 
     else {
-        // AUDITOR dışındaki tüm roller Stok Giriş/Çıkış yapabilir
         sidebar.getChildren().add(btnStokIslemleri);
 
-        // SUPPLIER rolüyse Firma Bilgilerim ekle
         if ("SUPPLIER".equalsIgnoreCase(aktifRol)) {
             sidebar.getChildren().add(btnFirmaBilgileri);
         }
 
-        // ADMIN / MANAGER ise Tam Yönetici Menülerini Ekle (STAFF ve SUPPLIER hariç)
         if (!"STAFF".equalsIgnoreCase(aktifRol) && !"SUPPLIER".equalsIgnoreCase(aktifRol)) {
             sidebar.getChildren().addAll(btnUrunEkle, btnUrunGuncelle, btnLoglar, btnKullaniciYonetimi);
             
-            // 🏢 Firma Yönetimi sadece ADMIN özelinde görünür
             if ("ADMIN".equalsIgnoreCase(aktifRol)) {
                 sidebar.getChildren().add(btnFirmaYonetimi);
             }
@@ -272,7 +249,6 @@ switch (sayfaAdi) {
             icerikAlani.getChildren().add(pencereUrunGuncellePanel()); 
             break;
 
-        // 🏢 FİRMA YÖNETİMİ (Artık icerikAlani yapısıyla tam uyumlu)
         case "FirmaYonetimi":
             icerikAlani.getChildren().add(pencereFirmaYonetimi());
             break;
@@ -303,7 +279,7 @@ switch (sayfaAdi) {
     }
 }
 
-    // --- BÖLÜM 2: DİNAMİK SEKMELERİN GÖRÜNÜMLERİ ---
+    // --- DİNAMİK SEKMELERİN GÖRÜNÜMLERİ ---
 
     private ScrollPane pencereDashboard() {
     ScrollPane scrollPane = new ScrollPane();
@@ -351,15 +327,12 @@ switch (sayfaAdi) {
 
         tblKritikUrunler.getColumns().addAll(colCode, colName, colQty, colPrice, colLoc);
 
-        // Kritik Verileri Güvenli Şekilde Çekme ve Yükleme
         try {
             List<Product> kritikUrunler;
             
-            // Eğer Servis Katmanında getLowStockProducts() Metodu Ekliyse Onu Kullan:
             try {
                 kritikUrunler = warehouseService.getLowStockProducts();
             } catch (NoSuchMethodError | Exception ex) {
-                // Alternatif/Yedek Yol: Tüm ürünlerden stoku 10 ve altında olanları filtrele
                 List<Product> tumUrunler = warehouseService.getAllProducts();
                 if (tumUrunler != null) {
                     kritikUrunler = tumUrunler.stream()
@@ -379,7 +352,6 @@ switch (sayfaAdi) {
         vbox.getChildren().addAll(lblBaslik, gridMetrik, lblTabloBaslik, tblKritikUrunler);
 
     } else { 
-        // 🟢 2. ROL: ADMIN / MANAGER / STAFF (Yönetim & Personel) Arayüzü
         Label lblBaslik = new Label("Genel Bakış & Analitik");
         lblBaslik.setFont(Font.font("System", FontWeight.BOLD, 22));
         lblBaslik.setTextFill(Color.WHITE);
@@ -424,8 +396,6 @@ switch (sayfaAdi) {
             if (lblToplamStok == null || kartKategoriAlani == null) return;
             lblToplamStok.setText(String.valueOf(warehouseService.getTotalProductQuantity()));
             
-            // 🎯 ÇÖZÜM: Hata veren "lblKritikStok.setText(...)" satırını sildik!
-            // Değeri doğrudan sınıf seviyesinde tanımlı olan "lblKritikUrunSayisi" etiketine yazdırıyoruz.
             lblKritikUrunSayisi.setText(String.valueOf(warehouseService.getCriticalStockCount()));
             
             Map<String, Integer> dagilim = warehouseService.getCategoryStockDistribution();
@@ -453,7 +423,6 @@ switch (sayfaAdi) {
         if (grafikKonteynir == null) return;
         grafikKonteynir.getChildren().clear();
 
-        //PASTA GRAFİĞİNİN EKLENDİĞİ KISIM
         PieChart pieChart = new PieChart();
         pieChart.setTitle("Kategori Dağılım Oranları");
         pieChart.setPrefSize(380, 290);
@@ -491,7 +460,6 @@ switch (sayfaAdi) {
 
         if (pieChart.getScene() != null) { applyDarkThemeStyles.run(); }
 
-        //SON STOK HAREKETLERİNİ GÖSTEREN ÇUBUK GRAFİĞİNİN EKLENDİĞİ KISIM
         CategoryAxis xAxis = new CategoryAxis();
         xAxis.setLabel("Ürünler");
         xAxis.setTickLabelFill(Color.WHITE);
@@ -649,7 +617,6 @@ switch (sayfaAdi) {
             
             comboCategory.setItems(FXCollections.observableArrayList(benzersizKategoriler));
             
-            // 🎯 GÖRÜNÜMÜ STANDARTLAŞTIRMA: ComboBox içinde gösterilirken "(Girilmedi)" temizliğini uyguluyoruz
             comboCategory.setConverter(new javafx.util.StringConverter<Category>() {
                 @Override
                 public String toString(Category object) {
@@ -676,17 +643,14 @@ switch (sayfaAdi) {
         try {
             List<Product> tumUrunler = warehouseService.getAllProducts();
             
-            // 🎯 Akıllı Filtreleme: İsim bazında benzersiz (distinct) Supplier listesi oluşturuyoruz
             java.util.Set<String> eklenenTedarikciIsimleri = new java.util.HashSet<>();
             java.util.List<Supplier> benzersizTedarikciler = new java.util.ArrayList<>();
             
             for (Product p : tumUrunler) {
                 Supplier sup = p.getSupplier();
                 if (sup != null && sup.getName() != null) {
-                    // Üst üste binen "(Girilmedi)" yazılarını regex ile temizliyoruz
                     String temizIsim = sup.getName().replaceAll("(\\s*\\(Girilmedi\\))+", " (Girilmedi)").trim();
                     
-                    // Eğer bu tedarikçi ismi listede daha önce yoksa, listeye ekle
                     if (eklenenTedarikciIsimleri.add(temizIsim.toLowerCase())) {
                         benzersizTedarikciler.add(sup);
                     }
@@ -695,7 +659,6 @@ switch (sayfaAdi) {
             
             comboSupplier.setItems(FXCollections.observableArrayList(benzersizTedarikciler));
             
-            // 🎯 GÖRÜNÜMÜ STANDARTLAŞTIRMA: ComboBox içinde gösterilirken "(Girilmedi)" temizliğini uyguluyoruz
             comboSupplier.setConverter(new javafx.util.StringConverter<Supplier>() {
                 @Override
                 public String toString(Supplier object) {
@@ -725,43 +688,36 @@ switch (sayfaAdi) {
 
         btnEkleKaydet.setOnAction(e -> {
             try {
-                // 🎯 YENİ KATEGORİ ALMA MANTIĞI
                 Category nihaiKategori = null;
                 String katYazi = comboCategory.getEditor().getText() != null ? comboCategory.getEditor().getText().trim() : "";
                 
                 if (!katYazi.isEmpty()) {
-                    // Önce listede bu isimle eşleşen hazır bir kategori var mı kontrol et
                     final String arananKat = katYazi;
                     nihaiKategori = comboCategory.getItems().stream()
                             .filter(c -> c.getName() != null && c.getName().equalsIgnoreCase(arananKat))
                             .findFirst()
                             .orElse(null);
                     
-                    // Eğer listede yoksa, yeni oluştur/veritabanından getir
                     if (nihaiKategori == null) {
                         nihaiKategori = warehouseService.getOrCreateCategoryByName(arananKat);
                     }
                 }
 
-                // 🎯 YENİ TEDARİKÇİ ALMA MANTIĞI
                 Supplier nihaiTedarikci = null;
                 String tedYazi = comboSupplier.getEditor().getText() != null ? comboSupplier.getEditor().getText().trim() : "";
                 
                 if (!tedYazi.isEmpty()) {
-                    // Önce listede bu isimle eşleşen hazır bir tedarikçi var mı kontrol et
                     final String arananTed = tedYazi;
                     nihaiTedarikci = comboSupplier.getItems().stream()
                             .filter(s -> s.getName() != null && s.getName().equalsIgnoreCase(arananTed))
                             .findFirst()
                             .orElse(null);
                     
-                    // Eğer listede yoksa, yeni bir Supplier nesnesi oluştur
                     if (nihaiTedarikci == null) {
                         nihaiTedarikci = new Supplier(0, arananTed, "Girilmedi");
                     }
                 }
 
-                // 🎯 GELİŞTİRİLMİŞ DOĞRULAMA KONTROLÜ
                 if (txtName.getText().trim().isEmpty() || 
                     txtQty.getText().trim().isEmpty() || 
                     txtPrice.getText().trim().isEmpty() || 
@@ -818,7 +774,6 @@ switch (sayfaAdi) {
     lblTitle.setFont(Font.font("System", FontWeight.BOLD, 18));
     lblTitle.setTextFill(Color.WHITE);
 
-    // Form Elemanları
     TextField txtProductCode = new TextField(); 
     txtProductCode.setPromptText("Aranacak Ürün Kodu (Örn: PRD-1001)");
     
@@ -839,7 +794,6 @@ switch (sayfaAdi) {
     comboSupplier.setMaxWidth(Double.MAX_VALUE);
     comboSupplier.setEditable(true);
 
-    // Stil Uygulamaları
     String inputStyle = "-fx-background-color: #2a2a35; -fx-text-fill: white; -fx-prompt-text-fill: #777; -fx-padding: 8; -fx-background-radius: 4;";
     for(TextField tf : new TextField[]{txtProductCode, txtName, txtPrice, txtLoc}) {
         tf.setStyle(inputStyle);
@@ -847,7 +801,6 @@ switch (sayfaAdi) {
     comboCategory.setStyle("-fx-background-color: #2a2a35;");
     comboSupplier.setStyle("-fx-background-color: #2a2a35;");
 
-    // Mevcut Kategori ve Tedarikçileri Doldurma
     try {
         List<Product> tumUrunler = warehouseService.getAllProducts();
         if (tumUrunler != null) {
@@ -860,7 +813,6 @@ switch (sayfaAdi) {
         }
     } catch(Exception ignored) {}
 
-    // Pop-Up Çağırma
     btnGetir.setOnAction(e -> {
         pencereUrunSecPopUp(txtProductCode, txtName, txtPrice, txtLoc, comboCategory, comboSupplier);
     });
@@ -869,29 +821,25 @@ switch (sayfaAdi) {
     btnGuncelleKaydet.setMaxWidth(Double.MAX_VALUE);
     btnGuncelleKaydet.setStyle("-fx-background-color: #00adb5; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10; -fx-cursor: hand; -fx-background-radius: 4;");
 
-    // Kaydet/Güncelle Aksiyonu
     btnGuncelleKaydet.setOnAction(e -> {
         String code = txtProductCode.getText().trim();
         String name = txtName.getText().trim();
         String priceStr = txtPrice.getText().trim();
         String loc = txtLoc.getText().trim();
 
-        // 1. Temel Boş Alan Kontrolü
         if (code.isEmpty() || name.isEmpty() || priceStr.isEmpty()) {
             alertGoster(Alert.AlertType.WARNING, "Eksik Bilgi", "Lütfen ürün kodu, ürün adı ve fiyat alanlarını doldurun!");
             return;
         }
 
-        // 2. Fiyat Format Kontrolü
         double price;
         try {
-            price = Double.parseDouble(priceStr.replace(",", ".")); // Virgül kullanımına karşı önlem
+            price = Double.parseDouble(priceStr.replace(",", "."));
         } catch (NumberFormatException ex) {
             alertGoster(Alert.AlertType.ERROR, "Geçersiz Fiyat", "Girdiğiniz birim fiyat geçerli bir sayı olmalıdır.");
             return;
         }
 
-        // 3. Kategori Dökümü
         Category nihaiKat = null;
         Object katVal = comboCategory.getValue();
         if (katVal instanceof Category c) {
@@ -900,7 +848,6 @@ switch (sayfaAdi) {
             nihaiKat = warehouseService.getOrCreateCategoryByName(str.trim());
         }
 
-        // 4. Tedarikçi Dökümü
         Supplier nihaiTed = null;
         Object tedVal = comboSupplier.getValue();
         if (tedVal instanceof Supplier s) {
@@ -914,14 +861,12 @@ switch (sayfaAdi) {
             return;
         }
 
-        // 5. Ürün Varlık Kontrolü
         Product oldProd = warehouseService.getProductById(code);
         if (oldProd == null) {
             alertGoster(Alert.AlertType.ERROR, "Bulunamadı", "Sistemde '" + code + "' koduna ait bir ürün bulunamadı!");
             return;
         }
 
-        // 6. Güncelleme İşlemi
         try {
             Product updatedProduct = new Product(code, name, nihaiKat, nihaiTed, oldProd.getQuantity(), price, loc);
             boolean isUpdated = warehouseService.updateProduct(code, updatedProduct, aktifUserId);
@@ -937,7 +882,6 @@ switch (sayfaAdi) {
         }
     });
 
-    // Arayüz Bilişenlerini Ekleme
     vbox.getChildren().addAll(
         lblTitle,
         createFormLabel("Güncellenecek Ürün Kodu: *"), txtProductCode, btnGetir,
@@ -952,7 +896,6 @@ switch (sayfaAdi) {
     return vbox;
 }
 
-// Etiket Renkleri İçin Yardımcı Metot
 private Label createFormLabel(String text) {
     Label lbl = new Label(text);
     lbl.setTextFill(Color.LIGHTGRAY);
@@ -1086,19 +1029,16 @@ private VBox pencereStokIslemleri() {
     comboType.setMouseTransparent(false);
     comboType.setEditable(false);
 
-    // 🔴 SUPPLIER KISITLAMASI: Tedarikçi sadece Stok Girişi (Stock In) yapabilir.
     if ("SUPPLIER".equalsIgnoreCase(aktifRol)) {
         comboType.setValue("STOCK_IN");
-        comboType.setDisable(true); // Tedarikçinin değiştirmesini engelle
+        comboType.setDisable(true);
     }
 
-    // 3. Miktar TextField Yapılandırması
     Label lblAmount = createFormLabel("Miktar:");
     TextField txtAmount = new TextField(); 
     txtAmount.setPromptText("Miktar (Örn: 50)");
     txtAmount.setPrefWidth(320);
 
-    // Stil Yapılandırmaları
     String inputStyle = "-fx-background-color: #2a2a35; -fx-text-fill: white; -fx-padding: 8; -fx-background-radius: 4;";
     txtId.setStyle(inputStyle);
     txtAmount.setStyle(inputStyle);
@@ -1131,7 +1071,6 @@ private VBox pencereStokIslemleri() {
         }
     });
 
-    // GridPane Eleman Yerleşimi (Açıklama alanları çıkarıldı)
     formGrid.add(lblId, 0, 0);
     formGrid.add(idLayout, 0, 1);
     
@@ -1141,20 +1080,17 @@ private VBox pencereStokIslemleri() {
     formGrid.add(lblAmount, 0, 4);
     formGrid.add(txtAmount, 0, 5);
 
-    // 4. Kaydet Butonu ve İşlem Mantığı
     Button btnUygula = new Button("🚀 Stok Hareketi Kaydet");
     btnUygula.setMaxWidth(320);
     btnUygula.setStyle("-fx-background-color: #e67e22; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 12; -fx-cursor: hand; -fx-background-radius: 4;");
 
     btnUygula.setOnAction(e -> {
-        // 1. Ürün ID Kontrolü
         String id = txtId.getText().trim();
         if (id.isEmpty()) {
             alertGoster(Alert.AlertType.WARNING, "Eksik Alan", "Lütfen bir Ürün ID seçin veya girin!");
             return;
         }
 
-        // 2. Miktar Kontrolü
         int miktar;
         try {
             miktar = Math.abs(Integer.parseInt(txtAmount.getText().trim()));
@@ -1167,35 +1103,30 @@ private VBox pencereStokIslemleri() {
             return;
         }
 
-        // 3. Seçilen İşlem Türü ve SUPPLIER Güvenlik Kontrolü
         String secilenTip = comboType.getValue();
-        
-        // 🔴 Yetkisiz Stok Çıkışı Güvenlik Duvarı
+    
         if ("SUPPLIER".equalsIgnoreCase(aktifRol) && ("STOCK_OUT".equalsIgnoreCase(secilenTip) || "STOK_ÇIKIŞ".equalsIgnoreCase(secilenTip))) {
             alertGoster(Alert.AlertType.ERROR, "Yetkisiz İşlem", "Tedarikçi (SUPPLIER) rolü depodan mal çıkışı (Stock Out) yapamaz!");
             return;
         }
 
         String type = "GÜNCELLEME";
-        String desc = ""; // Servis metodunun imzasını bozmamak için açıklama yerine boş metin gönderiyoruz
+        String desc = ""; 
 
         if ("STOCK_IN".equalsIgnoreCase(secilenTip) || "STOK_GİRİŞ".equalsIgnoreCase(secilenTip)) {
             type = "STOK_GİRİŞ";
         } else if ("STOCK_OUT".equalsIgnoreCase(secilenTip) || "STOK_ÇIKIŞ".equalsIgnoreCase(secilenTip)) {
-            miktar = -miktar; // Çıkış işleminde miktarı negatife çevir
+            miktar = -miktar;
             type = "STOK_ÇIKIŞ";
         }
 
-        // 4. Servis Çağrısı ve Veritabanı İşlemi
         try {
             warehouseService.addStockMovement(id, type, miktar, desc, aktifUserId);
             
-            // Panelleri ve Göstergeleri Güncelle
             dashboardVerileriniGuncelle();
             
             alertGoster(Alert.AlertType.INFORMATION, "Başarılı", "Stok hareketi başarıyla veritabanına işlendi.");
 
-            // Formu Temizle
             txtId.clear();
             txtAmount.clear();
             if (!"SUPPLIER".equalsIgnoreCase(aktifRol)) {
@@ -1210,17 +1141,14 @@ private VBox pencereStokIslemleri() {
     return anaKonteynir;
 }
 
-// 1. 📜 Sistem Günlükleri & Tarih Filtreli Log Paneli
 private VBox pencereLoglar() {
     VBox vbox = new VBox(15);
     vbox.setStyle("-fx-padding: 15; -fx-background-color: #1e1e2e;");
 
-    // Başlık
     Label lblTitle = new Label("📜 Sistem Denetim Günlükleri & Log Geçmişi");
     lblTitle.setFont(Font.font("System", FontWeight.BOLD, 18));
     lblTitle.setTextFill(Color.WHITE);
 
-    // 📅 Tarih Filtreleme Alanı
     HBox filterBox = new HBox(12);
     filterBox.setAlignment(Pos.CENTER_LEFT);
 
@@ -1240,7 +1168,6 @@ private VBox pencereLoglar() {
 
     filterBox.getChildren().addAll(lblBaslangic, dpBaslangic, lblBitis, dpBitis, btnFiltrele, btnSifirla);
 
-    // Tablo Yapılandırması
     logTablosu = new TableView<>();
     logTablosu.setStyle("-fx-background-color: #141419; -fx-control-inner-background: #141419;");
 
@@ -1276,7 +1203,6 @@ private VBox pencereLoglar() {
     logTablosu.getColumns().addAll(colLogId, colProdName, colMoveType, colQty, colDesc, colUser, colDate);
     logTablosu.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
 
-    // Varsayılan Verileri Yükleme Fonksiyonu
     Runnable tumLoglariYukle = () -> {
         try {
             logTablosu.getItems().clear();
@@ -1288,10 +1214,8 @@ private VBox pencereLoglar() {
         }
     };
 
-    // İlk açılışta tüm verileri getir
     tumLoglariYukle.run();
 
-    // 🔍 Filtrele Buton Aksiyonu
     btnFiltrele.setOnAction(e -> {
         LocalDate baslangic = dpBaslangic.getValue();
         LocalDate bitis = dpBitis.getValue();
@@ -1314,7 +1238,6 @@ private VBox pencereLoglar() {
         }
     });
 
-    // 🔄 Sıfırla Buton Aksiyonu
     btnSifirla.setOnAction(e -> {
         dpBaslangic.setValue(null);
         dpBitis.setValue(null);
@@ -1325,7 +1248,6 @@ private VBox pencereLoglar() {
     return vbox;
 }
 
-// 2. 🔔 Bildirim ve Uyarı Metodu (Filtreli Alert)
 private void alertGoster(Alert.AlertType type, String baslik, String icerik) {
     if (icerik != null && (
         icerik.toLowerCase().contains("invalid column name 'id'") || 
@@ -1342,7 +1264,6 @@ private void alertGoster(Alert.AlertType type, String baslik, String icerik) {
     alert.showAndWait();
 }
 
-// 3. 📊 Metrik / KPI Kartı Oluşturma Metodu
 private VBox olusturMetrikKarti(String baslik, Label lblDeger, String renkKodu) {
     VBox kart = new VBox(10);
     kart.setPadding(new Insets(20));
@@ -1365,35 +1286,27 @@ private void initializeSystemLogsTable() {
 
     tableSystemLogs.getColumns().clear();
 
-    // 1. Log ID Sütunu
     TableColumn<Map, Integer> colId = new TableColumn<>("Log ID");
     colId.setCellValueFactory(new MapValueFactory<>("id"));
 
-    // 2. Ürün Adı Sütunu
     TableColumn<Map, String> colProdName = new TableColumn<>("Ürün Adı");
     colProdName.setCellValueFactory(new MapValueFactory<>("productName"));
 
-    // 3. İşlem Türü Sütunu
     TableColumn<Map, String> colType = new TableColumn<>("İşlem Türü");
     colType.setCellValueFactory(new MapValueFactory<>("movementType"));
 
-    // 4. Miktar Sütunu
     TableColumn<Map, Integer> colQty = new TableColumn<>("Miktar");
     colQty.setCellValueFactory(new MapValueFactory<>("quantity"));
 
-    // 5. Açıklama Sütunu
     TableColumn<Map, String> colDesc = new TableColumn<>("Açıklama");
     colDesc.setCellValueFactory(new MapValueFactory<>("description"));
 
-    // 6. İşlemi Yapan Sütunu
     TableColumn<Map, String> colOperator = new TableColumn<>("İşlemi Yapan");
     colOperator.setCellValueFactory(new MapValueFactory<>("operator"));
 
-    // 7. Tarih Sütunu
     TableColumn<Map, String> colDate = new TableColumn<>("Tarih");
     colDate.setCellValueFactory(new MapValueFactory<>("movementDate"));
 
-    // Sütunları tabloya ekle
     tableSystemLogs.getColumns().addAll(colId, colProdName, colType, colQty, colDesc, colOperator, colDate);
 }
 
@@ -1401,17 +1314,13 @@ private void initializeSystemLogsTable() {
         launch(args);
     }
 
-    // Sınıfın içinde uygun bir yere (örneğin pencereLoglar() metodunun hemen altına) ekle:
 private void sistemGunlukleriniYenileVeGoster() {
     try {
-        // 1. Veritabanından en güncel log listesini çekiyoruz
         List<StockMovement> güncelLoglar = warehouseService.getAllStockMovements();
         
         if (logTablosu != null) {
-            // 2. Tablonun içeriğini temizleyip yenilerini setliyoruz
             logTablosu.setItems(FXCollections.observableArrayList(güncelLoglar));
             
-            // 3. JavaFX'e tabloyu görsel olarak yeniden çizmesi için zorla talimat veriyoruz
             logTablosu.refresh(); 
             
             System.out.println("✅ Sistem Günlükleri tablosu tetiklendi. Kayıt Sayısı: " + güncelLoglar.size());
@@ -1421,9 +1330,9 @@ private void sistemGunlukleriniYenileVeGoster() {
     }
 }
 
-// =========================================================================
-// 👥 YENİ GÜNCELLENEN PERSONEL YÖNETİM PANELİ VE METOTLARI (SIFIR HATA V2)
-// =========================================================================
+// =================================================
+// GÜNCELLENEN PERSONEL YÖNETİM PANELİ VE METOTLARI
+// =================================================
 
 private TableView<User> kullaniciTablosu;
 private TableView<StockMovement> secilenKullaniciLogTablosu;
@@ -1439,7 +1348,6 @@ private VBox pencereKullaniciYonetimi() {
     SplitPane splitPane = new SplitPane();
     splitPane.setStyle("-fx-background-color: transparent; -fx-box-border: transparent;");
 
-    // KULLANICILARIN GÖSTERİLDİĞİ KISIM
     VBox solBolum = new VBox(10);
     solBolum.setPrefWidth(450);
 
@@ -1470,7 +1378,6 @@ private VBox pencereKullaniciYonetimi() {
     butonlar.getChildren().addAll(btnSil, btnRolDegistir);
     solBolum.getChildren().addAll(new Label("👤 Kayıtlı Personeller"), kullaniciTablosu, butonlar);
 
-    // KULLANICI LOGLARINI GÖSTERİLDİĞİ KISIM
     VBox sagBolum = new VBox(10);
     secilenKullaniciLogTablosu = new TableView<>();
     secilenKullaniciLogTablosu.setStyle("-fx-background-color: #141419; -fx-control-inner-background: #141419;");
@@ -1489,7 +1396,6 @@ private VBox pencereKullaniciYonetimi() {
 
     splitPane.getItems().addAll(solBolum, sagBolum);
 
-    // Dinleyiciler (Listener)
     kullaniciTablosu.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
         if (newSelection != null) {
             personelLoglariniYukle(newSelection.getId());
@@ -1503,7 +1409,6 @@ private VBox pencereKullaniciYonetimi() {
         return;
     }
     
-    // 🛡️ GÜVENLİK FİLTRESİ: Aktif giriş yapan kullanıcı kendi hesabını silemez!
     String oturumAcanKullanici = (this.aktifKullanici != null) ? this.aktifKullanici : "";
     
     if (secilen.getUsername().equalsIgnoreCase(oturumAcanKullanici)) {
@@ -1515,53 +1420,40 @@ private VBox pencereKullaniciYonetimi() {
 });
 
     btnRolDegistir.setOnAction(e -> {
-        // 1. Tablodan seçilen personeli alıyoruz
         User secilen = kullaniciTablosu.getSelectionModel().getSelectedItem();
         if (secilen == null) return;
         
-        // GÜVENLİK: Nur kullanıcısı kendi rolünü kazara düşüremesin diye koruma
         if (secilen.getUsername().equalsIgnoreCase("Nur")) {
             System.out.println("⚠️ Kendi yöneticilik rolünüzü değiştiremezsiniz!");
             return;
         }
 
-        // 2. Enum içindeki tüm rolleri listeye dolduruyoruz
         java.util.List<com.depo.model.Role> rolSecenekleri = java.util.Arrays.asList(com.depo.model.Role.values());
 
-        // 3. Açılır küçük pencereyi (ChoiceDialog) oluşturuyoruz
-        // Varsayılan seçim olarak personelin şu anki mevcut rolünü gösteriyoruz
         javafx.scene.control.ChoiceDialog<com.depo.model.Role> dialog = new javafx.scene.control.ChoiceDialog<>(secilen.getRole(), rolSecenekleri);
         dialog.setTitle("🛡️ Yetki Düzenleme");
         dialog.setHeaderText("Personel: " + secilen.getUsername());
         dialog.setContentText("Lütfen yeni yetki seviyesini seçin:");
         
-        // Pencereye küçük bir depo teması stili (İsteğe bağlı)
         dialog.getDialogPane().setStyle("-fx-background-color: #1e1e24; -fx-text-fill: white;");
         dialog.getDialogPane().lookup(".content.label").setStyle("-fx-text-fill: white;");
 
-        // 4. Kullanıcının seçimi onaylamasını bekliyoruz
         java.util.Optional<com.depo.model.Role> sonuc = dialog.showAndWait();
         
-        // 5. Eğer bir rol seçip "OK / Tamam" butonuna bastıysa veritabanını güncelliyoruz
         sonuc.ifPresent(yeniRol -> {
             personelRolGuncelle(secilen.getId(), yeniRol.toString());
         });
     });
     vbox.getChildren().addAll(lblTitle, splitPane);
 
-    // 🎯 İŞTE ARIZAYI ÇÖZEN SİHİRLİ DOKUNUŞ BURA:
-    // Tablo arayüze eklenip paketlendi, tam ekrana basılmadan önce MSSQL'e koşup içini dolduruyoruz!
     personelListesiniYukle(); 
 
     return vbox;
 }
 
-// 1. Personel Listesini Veritabanından Çeker
-// 1. Personel Listesini Veritabanından Çeker (SIFIR ENUM BAĞIMLILIĞI - KESİN ÇÖZÜM)
 public void personelListesiniYukle() {
     List<User> kullanicilar = new ArrayList<>();
     
-    // 🎯 MSSQL 'users' tablosundan tüm temel verileri çekiyoruz
     String sql = "SELECT id, username, password_hash, role FROM dbo.users ORDER BY id ASC";
     
     try (java.sql.Connection conn = DatabaseConfig.getConnection();
@@ -1571,30 +1463,25 @@ public void personelListesiniYukle() {
         while (rs.next()) {
             int uId = rs.getInt("id");
             String uName = rs.getString("username");
-            String uPass = rs.getString("password_hash"); // Veritabanındaki şifre hash'i
+            String uPass = rs.getString("password_hash"); 
             String uRoleStr = rs.getString("role");
 
-            // 1. Veritabanından gelen String rolü com.depo.model.Role Enum yapısına dönüştürme (Null-Safe)
             com.depo.model.Role roleEnum = null;
             if (uRoleStr != null && !uRoleStr.trim().isEmpty()) {
                 try {
                     roleEnum = com.depo.model.Role.valueOf(uRoleStr.toUpperCase().trim());
                 } catch (IllegalArgumentException e) {
-                    // Enum eşleşmezse varsayılan rol atanıyor
                     roleEnum = com.depo.model.Role.values()[0];
                 }
             } else {
                 roleEnum = com.depo.model.Role.values()[0];
             }
 
-            // 2. User nesnesini 4 parametreli ana constructor ile oluşturma
-            // (Eğer şifre null gelirse patlamasın diye boş string garantisi)
             User userInstance = new User(uId, uName, uPass != null ? uPass : "", roleEnum);
 
             kullanicilar.add(userInstance);
         }
         
-        // 3. JavaFX TableView tablosunu güncelleme
         if (kullaniciTablosu != null) {
             kullaniciTablosu.setItems(javafx.collections.FXCollections.observableArrayList(kullanicilar));
             kullaniciTablosu.refresh();
@@ -1607,17 +1494,14 @@ public void personelListesiniYukle() {
     }
 }
 
-// 2. Seçilen personelin log geçmişini çeker
-// 2. Seçilen personelin log geçmişini çeker (TAMAMEN DİNAMİK VE MSSQL BAĞLANTILI)
 private void personelLoglariniYukle(int userId) {
     List<StockMovement> kullaniciLoglari = new ArrayList<>();
     
-    // 🎯 BURASI SİHİRLİ KISIM: SQL sorgusuna 'u.username' ve 'u.role' alanlarını ekledik ve users tablosunu JOIN ile bağladık!
     String sql = "SELECT sm.Id, sm.ProductId, sm.Quantity, sm.MovementType, sm.Description, sm.UserId, sm.Details, sm.MovementDate, " +
                  "p.Name AS productName, u.username AS gercekKullaniciAdi, u.role AS gercekKullaniciRolu " +
                  "FROM dbo.StockMovements sm " +
                  "LEFT JOIN dbo.Products p ON sm.ProductId = p.Id " +
-                 "LEFT JOIN dbo.users u ON sm.UserId = u.id " + // Stok hareketini yapan kullanıcıyı buluyoruz
+                 "LEFT JOIN dbo.users u ON sm.UserId = u.id " + 
                  "WHERE sm.UserId = ? ORDER BY sm.MovementDate DESC";
                  
     try (java.sql.Connection conn = DatabaseConfig.getConnection();
@@ -1633,15 +1517,11 @@ private void personelLoglariniYukle(int userId) {
                     rs.getString("Details"), rs.getTimestamp("MovementDate").toLocalDateTime()
                 );
                 
-                // Ürün adını veritabanından geldiği gibi dinamik setliyoruz
                 sm.setProductName(rs.getString("productName"));
                 
-                // 🎯 EL YAZISI (HARDCODED) ALANLARI MSSQL'E BAĞLADIĞIMIZ YER:
-                // Artık "Nur" yok! Veritabanında o işlemi gerçekten hangi personel yaptıysa o yansıyacak.
                 String dbUser = rs.getString("gercekKullaniciAdi");
                 String dbRole = rs.getString("gercekKullaniciRolu");
                 
-                // Eğer veritabanında o kullanıcı silindiyse veya boşsa uygulama çökmesin diye koruma (Fallback)
                 sm.setUserName(dbUser != null ? dbUser : "Bilinmeyen Personel");
                 sm.setUserRole(dbRole != null ? dbRole : "USER");
                 
@@ -1657,8 +1537,6 @@ private void personelLoglariniYukle(int userId) {
     }
 }
 
-// 3. Personeli siler
-// 3. Personeli veritabanından siler ve listeyi yeniler
 private void personelSil(int id, String username) {
     String sql = "DELETE FROM dbo.users WHERE id = ?";
     try (java.sql.Connection conn = DatabaseConfig.getConnection();
@@ -1669,9 +1547,7 @@ private void personelSil(int id, String username) {
         
         if (etkilenenSatir > 0) {
             System.out.println("🗑️ [BAŞARILI] Personel veritabanından silindi: " + username);
-            // Tabloyu veritabanından yeniden yükleyerek ekrandan uçuruyoruz
             personelListesiniYukle();
-            // Sağ taraftaki işlem geçmişi tablosunu temizliyoruz
             if (secilenKullaniciLogTablosu != null) {
                 secilenKullaniciLogTablosu.getItems().clear();
             }
@@ -1682,7 +1558,6 @@ private void personelSil(int id, String username) {
     }
 }
 
-// 4. Personelin rolünü günceller ve listeyi yeniler
 private void personelRolGuncelle(int id, String yeniRol) {
     String sql = "UPDATE dbo.users SET role = ? WHERE id = ?";
     try (java.sql.Connection conn = DatabaseConfig.getConnection();
@@ -1694,7 +1569,6 @@ private void personelRolGuncelle(int id, String yeniRol) {
         
         if (etkilenenSatir > 0) {
             System.out.println("🛡️ [BAŞARILI] Rol güncellendi -> Yeni Rol: " + yeniRol);
-            // Tabloyu veritabanından yeniden yükleyerek yeni rolü ekrana yansıtıyoruz
             personelListesiniYukle();
         }
     } catch (java.sql.SQLException e) {
@@ -1707,38 +1581,31 @@ private VBox createSupplierDashboard() {
     VBox mainLayout = new VBox(20);
     mainLayout.setPadding(new Insets(20));
 
-    // Başlık
     Label lblHeader = new Label("📦 Tedarikçi Mal Takviye & Yönetim Paneli");
     lblHeader.setStyle("-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #ecf0f1;");
 
-    // 🎯 1. METRİK KARTLARI
     HBox cardsContainer = new HBox(15);
     
-    // Kart 1: Kritik Stok
     VBox cardKritik = createMetricCard("⚠️ KRİTİK STOK ALARMI", "0", "#e74c3c");
     Label lblKritikSayi = (Label) cardKritik.getChildren().get(1);
 
-    // Kart 2: Son Sevkiyat
     VBox cardSonSevkiyat = createMetricCard("🕒 SON SEVKİYAT BİLGİSİ", "Henüz Yok", "#3498db");
     Label lblSonSevkiyat = (Label) cardSonSevkiyat.getChildren().get(1);
 
     cardsContainer.getChildren().addAll(cardKritik, cardSonSevkiyat);
 
-    // 🎯 2. KRİTİK STOK TABLOSU BAŞLIĞI VE UYARILAR
     Label lblTableTitle = new Label("⚠️ Stok Seviyesi Kritik Düzeyde Olan Ürünler");
     lblTableTitle.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #e67e22;");
 
     TableView<Product> tblKritikUrunler = new TableView<>();
     tblKritikUrunler.setPlaceholder(new Label("🎉 Stok seviyesi kritik düzeyde olan bir ürün bulunmuyor."));
 
-    // 🎯 3. HIZLI İŞLEM UYARISI (Uyarı Pop-up Yapısı Standart JavaFX Alert'e Dönüştürüldü)
     Button btnHizliTakviye = new Button("⚡ Seçili Ürüne Stok Girişi Yap");
     btnHizliTakviye.setStyle("-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20; -fx-cursor: hand;");
     
     btnHizliTakviye.setOnAction(e -> {
         Product selected = tblKritikUrunler.getSelectionModel().getSelectedItem();
         if (selected != null) {
-            // NOT: Eğer stok giriş sekmesine otomatik geçiş yapmıyorsanız, bu kısmı bilgi mesajı verecek şekilde kullanabilirsiniz:
             Alert info = new Alert(Alert.AlertType.INFORMATION);
             info.setTitle("Stok Takviye Bilgisi");
             info.setHeaderText(null);
@@ -1753,7 +1620,6 @@ private VBox createSupplierDashboard() {
         }
     });
 
-    // Verileri Yükleme
     try {
         List<Product> kritikUrunler = warehouseService.getLowStockProducts();
         if (kritikUrunler != null) {
@@ -1761,8 +1627,7 @@ private VBox createSupplierDashboard() {
             lblKritikSayi.setText(String.valueOf(kritikUrunler.size()));
         }
 
-        // Eğer kullanıcı id'sini tutan değişkeniniz varsa buradaki ID'yi güncelleyin (Örn: currentUserId)
-        int activeUserId = 1; // Veya projenizdeki aktif kullanıcı Id değişkeni
+        int activeUserId = 1; 
         String sonSevkiyatTarihi = warehouseService.getLastSupplierMovementDate(activeUserId);
         lblSonSevkiyat.setText(sonSevkiyatTarihi);
     } catch (Exception ignored) {}
@@ -1790,22 +1655,19 @@ private VBox createMetricCard(String title, String defaultValue, String accentCo
 private VBox createSupplierProfilePanel(int currentUserId) {
     VBox mainLayout = new VBox(20);
     mainLayout.setPadding(new Insets(25));
-    mainLayout.setStyle("-fx-background-color: #1e1e2e;"); // Temaya uygun koyu arka plan
+    mainLayout.setStyle("-fx-background-color: #1e1e2e;");
 
-    // Başlık
     Label lblHeader = new Label("🏢 Tedarikçi Firma & İletişim Bilgileri");
     lblHeader.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #ffffff;");
 
     Label lblSubHeader = new Label("Sistemde kayıtlı firmanıza ait iletişim, vergi ve açıklama bilgilerini buradan güncelleyebilirsiniz.");
     lblSubHeader.setStyle("-fx-font-size: 12px; -fx-text-fill: #a6adc8;");
 
-    // Form Izgarası (GridPane)
     GridPane grid = new GridPane();
     grid.setHgap(15);
     grid.setVgap(15);
     grid.setPadding(new Insets(10, 0, 10, 0));
 
-    // Form Elemanları
     TextField txtCompanyName = createStyledTextField("Firma / Şirket Adı");
     TextField txtContactPerson = createStyledTextField("Yetkili Temsilci / Kişi");
     TextField txtPhone = createStyledTextField("Telefon Numaranız");
@@ -1817,7 +1679,6 @@ private VBox createSupplierProfilePanel(int currentUserId) {
     txtDescription.setPrefRowCount(3);
     txtDescription.setStyle("-fx-control-inner-background: #313244; -fx-text-fill: white; -fx-border-color: #45475a; -fx-border-radius: 5;");
 
-    // Form Alanlarını Grid'e Ekleme
     addFormField(grid, "Firma :", txtCompanyName, 0);
     addFormField(grid, "Yetkili Kişi:", txtContactPerson, 1);
     addFormField(grid, "Telefon:", txtPhone, 2);
@@ -1829,11 +1690,9 @@ private VBox createSupplierProfilePanel(int currentUserId) {
     grid.add(lblDesc, 0, 5);
     grid.add(txtDescription, 1, 5);
 
-    // Kaydet Butonu
     Button btnSave = new Button("💾 Firma Bilgilerini Kaydet");
     btnSave.setStyle("-fx-background-color: #89b4fa; -fx-text-fill: #11111b; -fx-font-weight: bold; -fx-padding: 10 25; -fx-cursor: hand; -fx-background-radius: 5;");
 
-    // Mevcut Bilgileri Yükleme
     Map<String, String> profileData = warehouseService.getSupplierProfile(currentUserId);
     if (!profileData.isEmpty()) {
         txtCompanyName.setText(profileData.getOrDefault("CompanyName", ""));
@@ -1844,7 +1703,6 @@ private VBox createSupplierProfilePanel(int currentUserId) {
         txtDescription.setText(profileData.getOrDefault("Description", ""));
     }
 
-    // Kaydet Buton Aksiyonu
     btnSave.setOnAction(e -> {
         try {
             boolean success = warehouseService.updateSupplierProfile(
@@ -1854,7 +1712,7 @@ private VBox createSupplierProfilePanel(int currentUserId) {
                 txtPhone.getText().trim(),
                 txtEmail.getText().trim(),
                 txtTaxInfo.getText().trim(),
-                txtDescription.getText().trim() // 🟢 Hem Vergi No hem de Açıklama parametresi gönderiliyor
+                txtDescription.getText().trim()
             );
 
             Alert alert = new Alert(success ? Alert.AlertType.INFORMATION : Alert.AlertType.ERROR);
@@ -1876,7 +1734,6 @@ private VBox createSupplierProfilePanel(int currentUserId) {
     return mainLayout;
 }
 
-// Yardımcı Form Oluşturma Metotları
 private TextField createStyledTextField(String prompt) {
     TextField tf = new TextField();
     tf.setPromptText(prompt);
@@ -1892,16 +1749,9 @@ private void addFormField(GridPane grid, String labelText, Control inputControl,
     grid.add(inputControl, 1, row);
 }
 
-// 🎯 AUDITOR: İşlem Yapmayı Engelleyen Güvenlik Kontrolü
-// (Ürün Ekleme, Silme veya Stok Hareketi Butonlarının Başına Ekleyebilirsiniz)
 // ==========================================
 // AUDITOR YETKİLENDİRME VE ARAYÜZ KONTROLLERİ
 // ==========================================
-
-/**
- * Ürün ekleme, silme veya stok hareketi buton aksiyonlarının başında
- * AUDITOR engelini hızlıca kontrol etmek için kullanılır.
- */
 public boolean checkAuditorRestriction(String userRole) {
     if ("AUDITOR".equalsIgnoreCase(userRole)) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -1909,12 +1759,11 @@ public boolean checkAuditorRestriction(String userRole) {
         alert.setHeaderText("Yetki Sınırı");
         alert.setContentText("AUDITOR (Denetçi) rolündeki kullanıcılar sistem üzerinde değişiklik yapamaz.");
         alert.showAndWait();
-        return true; // Kısıtlı kullanıcı, işlemi durdur
+        return true;
     }
-    return false; // İşleme izin ver
+    return false; 
 }
 
-// 🎯 Hata Bildirimi Gösteren Yardımcı Metod
 private void showErrorAlert(String message) {
     Alert alert = new Alert(Alert.AlertType.ERROR);
     alert.setTitle("Hata");
@@ -1924,7 +1773,7 @@ private void showErrorAlert(String message) {
 }
 
 /**
- * AUDITOR Özel Yetki 1: Geçmiş Stok Hareketleri (Loglar) Penceresini Açar
+ * AUDITOR Özel Yetki : Geçmiş Stok Hareketleri
  */
 public void showAuditorLogs() {
     try {
@@ -1951,15 +1800,11 @@ public void showAuditorLogs() {
 }
 
 
-
-
-// 🎯 AUDITOR: Envanter Mali Değer Sayfası (Tam Ekran/Arayüz Görünümü)
 private VBox olusturEnvanterMaliRaporuSayfasi() {
     VBox mainLayout = new VBox(25);
     mainLayout.setPadding(new Insets(30));
-    mainLayout.setStyle("-fx-background-color: #1e1e2e;"); // ERP Tema Arka Planı
+    mainLayout.setStyle("-fx-background-color: #1e1e2e;");
 
-    // 1. Üst Başlık Alanı
     Label lblTitle = new Label("💰 Envanter Mali Değer & Analiz Raporu");
     lblTitle.setStyle("-fx-text-fill: #ffffff; -fx-font-size: 24px; -fx-font-weight: bold;");
 
@@ -1968,7 +1813,6 @@ private VBox olusturEnvanterMaliRaporuSayfasi() {
 
     VBox headerBox = new VBox(6, lblTitle, lblSubTitle);
 
-    // 2. Veri Hesabı
     double totalValue = 0.0;
     try {
         if (warehouseService != null) {
@@ -1978,7 +1822,6 @@ private VBox olusturEnvanterMaliRaporuSayfasi() {
         showErrorAlert("Mali rapor hesaplanırken hata oluştu: " + e.getMessage());
     }
 
-    // 3. KPI Kartı (Depo Toplam Değeri Gösteren Büyük Kart)
     VBox cardTotalValue = new VBox(12);
     cardTotalValue.setPadding(new Insets(25));
     cardTotalValue.setMaxWidth(500);
@@ -1993,7 +1836,6 @@ private VBox olusturEnvanterMaliRaporuSayfasi() {
     Label lblCardHeader = new Label("TOPLAM ENVANTER MALİ DEĞERİ");
     lblCardHeader.setStyle("-fx-text-fill: #89b4fa; -fx-font-size: 12px; -fx-font-weight: bold; -fx-letter-spacing: 1px;");
 
-    // Para birimi formatlı mali değer
     Label lblValue = new Label(String.format("%,.2f TL", totalValue));
     lblValue.setStyle("-fx-text-fill: #a6e3a1; -fx-font-size: 38px; -fx-font-weight: bold;");
 
@@ -2003,7 +1845,6 @@ private VBox olusturEnvanterMaliRaporuSayfasi() {
 
     cardTotalValue.getChildren().addAll(lblCardHeader, lblValue, lblFooter);
 
-    // 4. Yenileme Butonu
     Button btnYenile = new Button("🔄 Verileri Yenile");
     btnYenile.setStyle("-fx-background-color: #89b4fa; -fx-text-fill: #11111b; -fx-font-weight: bold; -fx-padding: 10 20; -fx-cursor: hand; -fx-background-radius: 6;");
     btnYenile.setOnAction(e -> navigasyonDegistir("EnvanterMaliRaporu"));
@@ -2012,13 +1853,11 @@ private VBox olusturEnvanterMaliRaporuSayfasi() {
     return mainLayout;
 }
 
-// 🎯 AUDITOR: Envanter Mali Değer Raporu Sayfası (Arayüz Görünümü)
 private VBox pencereEnvanterMaliRaporu() {
     VBox mainLayout = new VBox(20);
     mainLayout.setPadding(new Insets(25));
     mainLayout.setStyle("-fx-background-color: #1e1e2e;");
 
-    // --- 1. BAŞLIK VE AKSİYON BAR ---
     Label lblTitle = new Label("💰 Envanter Mali Değer & Analiz Raporu");
     lblTitle.setStyle("-fx-text-fill: #ffffff; -fx-font-size: 22px; -fx-font-weight: bold;");
 
@@ -2027,7 +1866,6 @@ private VBox pencereEnvanterMaliRaporu() {
 
     VBox headerBox = new VBox(4, lblTitle, lblSubTitle);
 
-    // --- KATEGORİ COMBOBOX (Görünürlük ve Temaya Uygun Stil) ---
     ComboBox<String> cmbKategori = new ComboBox<>();
     cmbKategori.getItems().add("Tüm Kategoriler");
     cmbKategori.setValue("Tüm Kategoriler");
@@ -2040,7 +1878,6 @@ private VBox pencereEnvanterMaliRaporu() {
         "-fx-font-weight: bold;"
     );
 
-    // Dropdown açıldığında ve seçildiğinde metinlerin beyaz olmasını sağlama
     cmbKategori.setCellFactory(lv -> new javafx.scene.control.ListCell<String>() {
         @Override
         protected void updateItem(String item, boolean empty) {
@@ -2067,7 +1904,6 @@ private VBox pencereEnvanterMaliRaporu() {
         }
     });
 
-    // PDF / Rapor İndir Butonu
     Button btnPDF = new Button("📄 Rapor İndir");
     btnPDF.setStyle("-fx-background-color: #313244; -fx-text-fill: #89b4fa; -fx-font-weight: bold; -fx-border-color: #89b4fa; -fx-border-radius: 5; -fx-cursor: hand; -fx-padding: 8 15;");
 
@@ -2082,7 +1918,6 @@ private VBox pencereEnvanterMaliRaporu() {
     topBar.setLeft(headerBox);
     topBar.setRight(actionBox);
 
-    // --- 2. VERİTABANINDAN VERİLERİ SORGULAMA ---
     double totalValue = 0.0;
     int toplamKalem = 0;
     String enDegerliUrun = "Veri Yok";
@@ -2091,12 +1926,10 @@ private VBox pencereEnvanterMaliRaporu() {
 
     try (Connection conn = DatabaseConfig.getConnection()) {
         
-        // A. Toplam Mali Değer
         if (warehouseService != null) {
             totalValue = warehouseService.getTotalInventoryValue();
         }
 
-        // B. Toplam Ürün Kalem Sayısı
         String sqlCount = "SELECT COUNT(*) FROM dbo.Products";
         try (PreparedStatement stmt = conn.prepareStatement(sqlCount);
              ResultSet rs = stmt.executeQuery()) {
@@ -2107,7 +1940,6 @@ private VBox pencereEnvanterMaliRaporu() {
             System.out.println("⚠️ Count sorgusu uyarısı: " + ex.getMessage());
         }
 
-        // C. En Değerli 5 Ürün Sorgusu (Şemanıza Tam Uyumlu)
         String sqlTop5 = "SELECT TOP 5 Name, Quantity, (Quantity * Price) AS total_val " +
                          "FROM dbo.Products " +
                          "ORDER BY total_val DESC";
@@ -2133,7 +1965,6 @@ private VBox pencereEnvanterMaliRaporu() {
             System.out.println("❌ Top 5 Ürün Hatası: " + ex.getMessage());
         }
 
-        // D. KATEGORİ LİSTESİNİ ÇEKME (Categories Tablosundan Name Kolonu)
         String sqlCatList = "SELECT Name FROM dbo.Categories ORDER BY Name ASC";
         try (PreparedStatement stmtCat = conn.prepareStatement(sqlCatList);
              ResultSet rsCat = stmtCat.executeQuery()) {
@@ -2147,7 +1978,6 @@ private VBox pencereEnvanterMaliRaporu() {
             System.out.println("❌ Kategori listesi çekme hatası: " + exCat.getMessage());
         }
 
-        // E. PASTA GRAFİĞİ İÇİN KATEGORİ BAZLI MALİYET DAĞILIMI (JOIN İle)
         String sqlCatDist = "SELECT ISNULL(c.Name, 'Kategorisiz') AS CategoryName, " +
                             "SUM(p.Quantity * p.Price) AS CategoryTotal " +
                             "FROM dbo.Products p " +
@@ -2171,7 +2001,6 @@ private VBox pencereEnvanterMaliRaporu() {
         System.out.println("❌ Veritabanı bağlantı hatası: " + e.getMessage());
     }
 
-    // --- 3. KPI KARTLARI ---
     HBox kpiContainer = new HBox(15);
     kpiContainer.setMaxWidth(Double.MAX_VALUE);
 
@@ -2184,11 +2013,9 @@ private VBox pencereEnvanterMaliRaporu() {
     HBox.setHgrow(cardTotalCount, Priority.ALWAYS);
     HBox.setHgrow(cardTopProduct, Priority.ALWAYS);
 
-    // --- 4. GRAFİK VE TABLO DÜZENİ ---
     HBox bottomContainer = new HBox(20);
     bottomContainer.setMaxWidth(Double.MAX_VALUE);
 
-    // Sol Taraf: Pasta Grafiği
     VBox chartBox = new VBox(10);
     chartBox.setPadding(new Insets(15));
     chartBox.setStyle("-fx-background-color: #2a2a3c; -fx-background-radius: 8; -fx-border-color: #45475a; -fx-border-radius: 8;");
@@ -2213,7 +2040,6 @@ private VBox pencereEnvanterMaliRaporu() {
     chartBox.getChildren().addAll(lblChartTitle, pieChart);
     HBox.setHgrow(chartBox, Priority.ALWAYS);
 
-    // Sağ Taraf: En Değerli 5 Ürün Tablosu
     VBox tableBox = new VBox(10);
     tableBox.setPadding(new Insets(15));
     tableBox.setStyle("-fx-background-color: #2a2a3c; -fx-background-radius: 8; -fx-border-color: #45475a; -fx-border-radius: 8;");
@@ -2243,7 +2069,6 @@ private VBox pencereEnvanterMaliRaporu() {
 
     bottomContainer.getChildren().addAll(chartBox, tableBox);
 
-    // --- 5. RAPOR İNDİR AKSİYONU ---
     final double fTotalVal = totalValue;
     final int fTotalCount = toplamKalem;
     btnPDF.setOnAction(e -> {
@@ -2280,7 +2105,6 @@ private VBox pencereEnvanterMaliRaporu() {
     return mainLayout;
 }
 
-// 🎯 En değerli ürünler tablosu için inner model sınıfı
     public static class TopProductModel {
         private final String productName;
         private final int quantity;
@@ -2304,7 +2128,6 @@ private VBox pencereEnvanterMaliRaporu() {
             return totalValue; 
         }
     }
-    // 🛠️ KPI Kartı Oluşturma Yardımcı Metodu
 private VBox olusturKPICard(String baslik, String deger, String renkHex) {
     VBox card = new VBox(8);
     card.setPadding(new Insets(18));
@@ -2331,7 +2154,6 @@ private VBox pencereFirmaYonetimi() {
     mainLayout.setPadding(new Insets(25));
     mainLayout.setStyle("-fx-background-color: #1e1e2e;");
 
-    // 🔴 1. YETKİ KONTROLÜ (Sadece ADMIN Erişebilir)
     if (!"ADMIN".equalsIgnoreCase(aktifRol)) {
         VBox errorBox = new VBox(15);
         errorBox.setAlignment(Pos.CENTER);
@@ -2349,7 +2171,6 @@ private VBox pencereFirmaYonetimi() {
         return errorBox;
     }
 
-    // --- 2. ÜST BAŞLIK VE ARAMA BARI ---
     Label lblTitle = new Label("🏢 Firma ve Tedarikçi Yönetim Paneli");
     lblTitle.setStyle("-fx-text-fill: #ffffff; -fx-font-size: 22px; -fx-font-weight: bold;");
 
@@ -2358,13 +2179,11 @@ private VBox pencereFirmaYonetimi() {
 
     VBox headerBox = new VBox(4, lblTitle, lblSubTitle);
 
-    // Arama Kutusu
     TextField txtSearch = new TextField();
     txtSearch.setPromptText("🔍 Firma Adı, Yetkili veya Vergi No Ara...");
     txtSearch.setPrefWidth(280);
     txtSearch.setStyle("-fx-background-color: #313244; -fx-text-fill: white; -fx-padding: 8; -fx-background-radius: 5; -fx-border-color: #45475a; -fx-border-radius: 5;");
 
-    // Yenile Butonu
     Button btnYenile = new Button("🔄 Yenile");
     btnYenile.setStyle("-fx-background-color: #89b4fa; -fx-text-fill: #11111b; -fx-font-weight: bold; -fx-padding: 8 15; -fx-cursor: hand; -fx-background-radius: 5;");
     btnYenile.setOnAction(e -> navigasyonDegistir("FirmaYonetimi"));
@@ -2376,7 +2195,6 @@ private VBox pencereFirmaYonetimi() {
     topBar.setLeft(headerBox);
     topBar.setRight(actionBox);
 
-    // --- 3. TABLO YAPILANDIRMASI ---
     TableView<CompanyModel> tableCompanies = new TableView<>();
     tableCompanies.setStyle("-fx-background-color: #181825; -fx-control-inner-background: #1e1e2e; -fx-table-cell-border-color: #313244;");
     tableCompanies.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
@@ -2414,7 +2232,6 @@ private VBox pencereFirmaYonetimi() {
         colDescription
     );
 
-    // --- 4. VERİTABANINDAN VERİ ÇEKME ---
     ObservableList<CompanyModel> companyList = FXCollections.observableArrayList();
     String sqlSelect = "SELECT Id, Name, ContactPerson, Phone, Email, TaxNumber, Description FROM dbo.Suppliers";
 
@@ -2438,7 +2255,6 @@ private VBox pencereFirmaYonetimi() {
         ex.printStackTrace();
     }
 
-    // Arama / Filtreleme Mantığı
     FilteredList<CompanyModel> filteredData = new FilteredList<>(companyList, p -> true);
 
     txtSearch.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -2474,7 +2290,6 @@ private VBox pencereFirmaYonetimi() {
 
     tableCompanies.setItems(filteredData);
 
-    // --- 5. BİLGİ GÜNCELLEME VE SİLME ALANI (ALT FORM) ---
     VBox editCard = new VBox(12);
     editCard.setPadding(new Insets(15));
     editCard.setStyle("-fx-background-color: #2a2a3c; -fx-background-radius: 8; -fx-border-color: #45475a; -fx-border-radius: 8;");
@@ -2500,7 +2315,6 @@ private VBox pencereFirmaYonetimi() {
     formGrid.add(new Label("Vergi No:"), 0, 2); formGrid.add(txtEditTax, 1, 2);
     formGrid.add(new Label("Açıklama:"), 2, 2); formGrid.add(txtEditDesc, 3, 2);
 
-    // Label Renkleri
     formGrid.getChildren().stream()
             .filter(node -> node instanceof Label)
             .forEach(node -> ((Label) node).setStyle("-fx-text-fill: #cdd6f4; -fx-font-weight: bold;"));
@@ -2511,7 +2325,6 @@ private VBox pencereFirmaYonetimi() {
     Button btnSil = new Button("🗑️ Firmayı Sil");
     btnSil.setStyle("-fx-background-color: #f38ba8; -fx-text-fill: #11111b; -fx-font-weight: bold; -fx-padding: 10 20; -fx-cursor: hand; -fx-background-radius: 5;");
 
-    // Tablodan Eleman Seçilince Formu Doldurma
     final CompanyModel[] selectedCompany = new CompanyModel[1];
     tableCompanies.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
         if (newVal != null) {
@@ -2534,17 +2347,15 @@ btnKaydet.setOnAction(e -> {
 
     String sqlUpdate = "UPDATE dbo.Suppliers SET Name=?, ContactPerson=?, Phone=?, Email=?, TaxNumber=?, Description=? WHERE Id=?";
     
-    // 📌 Kolon isimleri veritabanınla %100 eşitlendi (id ve username)
     String sqlLog = "INSERT INTO dbo.StockMovements (MovementType, Description, Quantity, UserId, MovementDate) " +
                     "VALUES (?, ?, ?, (SELECT TOP 1 id FROM dbo.users WHERE username = ?), GETDATE())";
 
     try (java.sql.Connection conn = DatabaseConfig.getConnection()) {
-        conn.setAutoCommit(false); // Transaction başlat
+        conn.setAutoCommit(false);
 
         try (java.sql.PreparedStatement stmt = conn.prepareStatement(sqlUpdate);
              java.sql.PreparedStatement stmtLog = conn.prepareStatement(sqlLog)) {
 
-            // 1. Firma Bilgilerini Güncelle
             stmt.setString(1, txtEditName.getText().trim());
             stmt.setString(2, txtEditContact.getText().trim());
             stmt.setString(3, txtEditPhone.getText().trim());
@@ -2556,22 +2367,19 @@ btnKaydet.setOnAction(e -> {
             int updatedRows = stmt.executeUpdate();
 
             if (updatedRows > 0) {
-                // Log Detayı
                 String logDetay = "Firma ID: " + selectedCompany[0].getId() + 
                                   " | Eski Adı: '" + selectedCompany[0].getCompanyName() + 
                                   "' -> Yeni Adı: '" + txtEditName.getText().trim() + "'";
 
-                // 2. StockMovements Tablosuna Log Atma
                 stmtLog.setString(1, "FİRMA GÜNCELLEME");
                 stmtLog.setString(2, logDetay);
-                stmtLog.setInt(3, 0); // Quantity (Miktar)
+                stmtLog.setInt(3, 0); 
                 
-                // 📌 Giriş yapan kullanıcının adını gönderiyoruz (ör. "Nur")
                 stmtLog.setString(4, this.aktifKullanici); 
 
                 stmtLog.executeUpdate();
 
-                conn.commit(); // Veritabanında işlemleri onayla
+                conn.commit(); 
 
                 alertGoster(Alert.AlertType.INFORMATION, "Başarılı", "Firma bilgileri güncellendi.");
                 navigasyonDegistir("FirmaYonetimi");
@@ -2588,7 +2396,6 @@ btnKaydet.setOnAction(e -> {
     }
 });
 
-    // 🗑️ SİLME İŞLEMİ (Log Tablosu Olmasa da Çalışır)
     btnSil.setOnAction(e -> {
         if (selectedCompany[0] == null) {
             alertGoster(Alert.AlertType.WARNING, "Seçim Yapılmadı", "Lütfen silmek istediğiniz firmayı tablodan seçin!");
@@ -2612,24 +2419,20 @@ btnKaydet.setOnAction(e -> {
                 try (java.sql.PreparedStatement stmt1 = conn.prepareStatement(sqlUpdateProducts);
                      java.sql.PreparedStatement stmt2 = conn.prepareStatement(sqlDeleteSupplier)) {
 
-                    // 1. Ürün bağını kopar
                     stmt1.setInt(1, selectedCompany[0].getId());
                     stmt1.executeUpdate();
 
-                    // 2. Firmayı sil
                     stmt2.setInt(1, selectedCompany[0].getId());
                     int deletedRows = stmt2.executeUpdate();
 
-                    conn.commit(); // Ana silme işlemlerini onayla
+                    conn.commit(); 
 
-                    // Log atma denemesi (Ayrı blokta)
                     try (java.sql.PreparedStatement stmtLog = conn.prepareStatement(
                             "INSERT INTO dbo.SystemLogs (Action, Details, CreatedAt) VALUES (?, ?, GETDATE())")) {
                         stmtLog.setString(1, "FİRMA SİLİNDİ");
                         stmtLog.setString(2, "Silinen Firma ID: " + selectedCompany[0].getId() + " | Adı: " + selectedCompany[0].getCompanyName());
                         stmtLog.executeUpdate();
                     } catch (Exception ignored) {
-                        // SystemLogs tablosu olmasa da silme iptal olmaz
                     }
 
                     if (deletedRows > 0) {
