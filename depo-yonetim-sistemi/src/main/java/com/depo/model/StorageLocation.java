@@ -1,10 +1,10 @@
 package com.depo.model;
 
 public class StorageLocation {
-    private String zone;      // Örn: "A-Blok", "Soğuk Hava Deposu"
-    private int aisle;        // Koridor Numarası (Örn: 5)
-    private String shelf;     // Raf Harfi/Kodu (Örn: "C")
-    private int bin;          // Rafın Göz/Kat Numarası (Örn: 2)
+    private String zone;
+    private int aisle; 
+    private String shelf;
+    private int bin; 
 
     public StorageLocation(String zone, int aisle, String shelf, int bin) {
         this.zone = zone;
@@ -13,7 +13,6 @@ public class StorageLocation {
         this.bin = bin;
     }
 
-    // Encapsulation (Getter / Setter)
     public String getZone() { return zone; }
     public void setZone(String zone) { this.zone = zone; }
 
@@ -26,7 +25,6 @@ public class StorageLocation {
     public int getBin() { return bin; }
     public void setBin(int bin) { this.bin = bin; }
 
-    // Kurumsal tam lokasyon kodu üretici (Örn: A-Blok-K5-R-C-G2)
     public String getFullLocationCode() {
         return zone + "-K" + aisle + "-R" + shelf + "-G" + bin;
     }
